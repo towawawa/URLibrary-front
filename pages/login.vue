@@ -1,40 +1,29 @@
 <script lang="ts" setup>
 useHead({ title: 'ログイン' });
-
-const email = ref('');
 </script>
 
 <template>
   <div class="login">
     <h1>URLibrary</h1>
-    <div class="login-container">
-      <p class="auth-error">ユーザ名またはパスワードが違います。</p>
-      <form class="login-form">
-        <AtomsInput type="email" :value="email" @change="email = $event" errorMessage="aaa" />
-      </form>
-    </div>
+    <OrganismsLogin />
   </div>
 </template>
 
 <style lang="scss" scoped>
 .login {
-  display: flex;
-  justify-content: center;
+  display: block;
   align-items: center;
-  height: 100vh;
+  width: 100%;
+  height: 100%;
+
   h1 {
+    color: $primary;
+    display: block;
     text-align: center;
-    font-size: 2rem;
+    font-size: 3rem;
     margin-bottom: 2rem;
-    font: 'Inter';
-  }
-  .login-container {
-    width: 300px;
-    
-    .login-form {
-      display: flex;
-      flex-direction: column;
-    }
+    margin-top: 10rem;
+    font-weight: bold;
   }
 }
 </style>

@@ -34,8 +34,6 @@ const onChange = (event: Event): void => {
 </template>
 
 <style lang="scss" scoped>
-@use '@/assets/colors.scss' as *;
-
 .input-container {
   position: relative;
   padding-bottom: 10px;
@@ -44,6 +42,7 @@ const onChange = (event: Event): void => {
     padding: 8px;
     border: 1px solid $border;
     border-radius: 4px;
+    font-size: 1rem;
 
     &.is-error {
       border-color: $error;
@@ -52,6 +51,7 @@ const onChange = (event: Event): void => {
   .error-message {
     color: $error;
     position: absolute;
+    font-size: 0.8rem
   }
 }
 </style>
