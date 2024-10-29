@@ -1,3 +1,3 @@
 <template>
-  <div>top</div>
+  <div>signup</div>
 </template>

@@ -4,7 +4,7 @@ export default defineNuxtConfig({
 
   app: {
     head: {
-      titleTemplate: 'URLibrary',
+      titleTemplate: 'URLibrary %s',
       htmlAttrs: {
         lang: 'ja',
       },
@@ -12,16 +12,14 @@ export default defineNuxtConfig({
         { charset: 'utf-8' },
         { name: 'viewport', content: 'width=device-width, initial-scale=1' },
       ],
-      link: [
-        { rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' },
-      ],
+      link: [{ rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' }],
     },
   },
   experimental: {
     typedPages: true,
   },
 
-  css: [],
+  css: ['@/assets/scss/style.scss'],
   modules: ['@nuxtjs/tailwindcss'],
 
   imports: {
@@ -29,6 +27,17 @@ export default defineNuxtConfig({
   },
 
   compatibilityDate: '2024-10-27',
+
+  vite: {
+    css: {
+      preprocessorOptions: {
+        scss: {
+          additionalData:
+            '@use "~/assets/scss/_colors.scss" as *;',
+        },
+      },
+    },
+  },
 
   runtimeConfig: {
     public: {

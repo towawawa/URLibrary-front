@@ -1,0 +1,15 @@
+@use '_colors.scss' as *;
+
+h1,
+h2,
+h3,
+p,
+input,
+button,
+a {
+  font-family: Inter;
+}
+
+body {
+  background-color: $background;
+}
