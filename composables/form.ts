@@ -351,6 +351,15 @@ export function useForm<
     }
   };
 
+  /**
+   * dataの値をqueryへ含めて、ページ遷移する
+   */
+  const pushWithQuery = (path: string) => {
+    if (isErrors()) return;
+
+    useRouter().push(joinPathWithQuery(path, data.value));
+  };
+
   return {
     data: readonly(data.value) as Data,
     errors, // バリーションエラーメッセージ
@@ -365,5 +374,6 @@ export function useForm<
     clearError, // 指定されたプロパティのエラーメッセージを削除
     validations, // バリデーション
     names, // 表示名
+    pushWithQuery, // dataの値をqueryへ含めて、ページ遷移する
   };
 }

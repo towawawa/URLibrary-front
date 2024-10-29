@@ -1,11 +1,13 @@
 <script setup lang="ts" generic="T extends number | string | null">
 type Props = {
+  class?: string;
   type?: 'date' | 'email' | 'number' | 'password' | 'text';
   value: T;
   errorMessage?: string;
 };
 
 const props = withDefaults(defineProps<Props>(), {
+  class: '',
   type: 'text',
   errorMessage: '',
 });
@@ -20,7 +22,7 @@ const onChange = (event: Event): void => {
 </script>
 
 <template>
-  <div class="input-container">
+  <div :class="['input-container', props.class]">
     <input
       :value="props.value"
       :type="props.type"
@@ -51,7 +53,7 @@ const onChange = (event: Event): void => {
   .error-message {
     color: $error;
     position: absolute;
-    font-size: 0.8rem
+    font-size: 0.8rem;
   }
 }
 </style>
