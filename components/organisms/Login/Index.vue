@@ -22,7 +22,7 @@ const login = () => {
 </script>
 
 <template>
-  <div class="login-container">
+  <div class="login-container" @keyup.enter="login()">
     <p v-if="showLoginError" class="auth-error">
       <img src="@/assets/images/error-icon.svg" alt="エラー" />
       ユーザ名またはパスワードが違います。
