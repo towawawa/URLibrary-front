@@ -21,6 +21,7 @@ export default defineNuxtConfig({
 
   css: ['@/assets/scss/style.scss'],
   modules: ['@nuxtjs/tailwindcss'],
+  plugins: ['@/plugins/vue-select.ts'],
 
   imports: {
     dirs: ['composables/**', 'store/**', 'components/**', 'types/**'],
@@ -32,8 +33,7 @@ export default defineNuxtConfig({
     css: {
       preprocessorOptions: {
         scss: {
-          additionalData:
-            '@use "~/assets/scss/_colors.scss" as *;',
+          additionalData: '@use "~/assets/scss/_colors.scss" as *;',
         },
       },
     },

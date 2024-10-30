@@ -39,6 +39,9 @@ export const fetcher = (
 
           break;
         }
+        case 422: {
+          throw response;
+        }
         default: {
           // その他のエラーはエラーページへリダイレクト
           showError({

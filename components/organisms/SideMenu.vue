@@ -1,16 +1,33 @@
 <script lang="ts" setup>
 import type { Genre } from '@/types/api/genre';
+import { routeLocationKey } from 'vue-router';
 
 const genres = ref<Genre[]>([]);
 
 const setGenres = async () => {
-await fetcher('GET', '/genres')
-  .then((res) => {
-    genres.value = res.data as Genre[];
-  })
-  .catch((err) => {
-    console.error(err);
-  });
+  await fetcher('GET', '/genres')
+    .then((res) => {
+      genres.value = res.data as Genre[];
+    })
+    .catch((err) => {
+      console.error(err);
+    });
+};
+
+const deleteQueryGenreId = () => {
+  const route = useRoute();
+
+  // 現在のクエリからtagIdを消してそのままの画面にrouter.push
+  const query = { ...route.query };
+  delete query.genreId;
+
+  useRouter().push(joinPathWithQuery(route.path, query));
+};
+
+const route = useRoute();
+const pushQueryGenreId = (genreId: number) => {
+  // 現在のクエリにtagIdを追加してそのままの画面にrouter.push
+  useRouter().push(joinPathWithQuery(route.path, { ...route.query, genreId }));
 };
 
 await setGenres();
@@ -19,13 +36,18 @@ await setGenres();
 <template>
   <div class="side-menu">
     <ul>
-      <li>
+      <li @click="deleteQueryGenreId()">
         <img src="@/assets/images/tag-icon.svg" />
         <span>ALL</span>
       </li>
-      <li v-for="genre in genres" :key="genre.id">
+      <li
+        v-for="genre in genres"
+        :key="genre.id"
+        :class="{ selected: Number(route.query.genreId) === genre.id }"
+        @click="pushQueryGenreId(genre.id)"
+      >
         <img :src="genre.imagePath" />
-        <span>{{genre.name}}</span>
+        <span>{{ genre.name }}</span>
       </li>
     </ul>
   </div>
@@ -54,7 +76,11 @@ await setGenres();
 
       &:hover {
         cursor: pointer;
-        background-color: $gray;
+        background-color: $hover;
+      }
+
+      &.selected {
+        background-color: $hover;
       }
     }
   }

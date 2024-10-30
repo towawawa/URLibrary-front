@@ -5,7 +5,7 @@ const route = useRoute();
 <template>
   <OrganismsHeader v-if="route.path !== '/login'" />
   <main class="main-content">
-  <OrganismsSideMenu v-if="route.path !== '/login'" />
+    <OrganismsSideMenu v-if="route.path !== '/login'" />
     <content>
       <slot></slot>
     </content>
@@ -13,7 +13,7 @@ const route = useRoute();
 </template>
 
 <style lang="scss" scoped>
-.main-content{
+.main-content {
   display: flex;
   content {
     width: 100%;

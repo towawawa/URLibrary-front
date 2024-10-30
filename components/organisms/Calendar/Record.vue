@@ -3,7 +3,8 @@ type Props = {
   class?: string;
   dates: string[];
   data: UrlLibrary[][];
-}
+  recordIndex: number;
+};
 
 const props = withDefaults(defineProps<Props>(), {
   class: '',
@@ -17,6 +18,7 @@ const props = withDefaults(defineProps<Props>(), {
       :key="date"
       :date="date"
       :data="props.data[index] ? props.data[index] : []"
+      :record-index="props.recordIndex"
     />
   </tr>
 </template>

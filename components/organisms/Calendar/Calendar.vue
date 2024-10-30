@@ -6,14 +6,14 @@ type Props = {
   class?: string;
   ym: string; // 年月
   data: UrlLibrary[];
-}
+};
 
 const props = withDefaults(defineProps<Props>(), {
   class: '',
 });
 
-const weeks = ref(getWeeks('2024-10'));
-const weeklyData = ref<UrlLibrary[][][]>([])
+const weeks = ref(getWeeks(props.ym));
+const weeklyData = ref<UrlLibrary[][][]>([]);
 
 watch(
   () => props.data,
@@ -23,49 +23,50 @@ watch(
   },
   {
     deep: true,
+    immediate: true,
   },
 );
-
 </script>
 
 <template>
-<table class="calendar">
-<thead>
-    <tr class="weekday">
-      <th class="sunday">日 <span>SUN</span></th>
-      <th>月 <span>MON</span></th>
-      <th>火 <span>TUE</span></th>
-      <th>水 <span>WED</span></th>
-      <th>木 <span>THU</span></th>
-      <th>金 <span>FRI</span></th>
-      <th class="saturday">土<span>SAT</span></th>
-    </tr>
-</thead>
+  <table class="calendar">
+    <thead>
+      <tr class="weekday">
+        <th class="sunday">日 <span>SUN</span></th>
+        <th>月 <span>MON</span></th>
+        <th>火 <span>TUE</span></th>
+        <th>水 <span>WED</span></th>
+        <th>木 <span>THU</span></th>
+        <th>金 <span>FRI</span></th>
+        <th class="saturday">土<span>SAT</span></th>
+      </tr>
+    </thead>
 
-<tbody>
-    <OrganismsCalendarRecord
-    v-for="(week, index) in weeks"
-    :key="index"
-    :dates="week"
-    :data="weeklyData[index] ? weeklyData[index] : []"
-    />
-</tbody>
-</table>
+    <tbody>
+      <OrganismsCalendarRecord
+        v-for="(week, index) in weeks"
+        :key="index"
+        :dates="week"
+        :data="weeklyData[index] ? weeklyData[index] : []"
+        :record-index="index"
+      />
+    </tbody>
+  </table>
 </template>
 
 <style lang="scss" scoped>
 .calendar {
-  margin: 30px;
+  margin: 0 30px 30px 30px;
   background-color: $white;
   border-radius: 3px;
   display: inline-block;
-thead {
-  .weekday {
-    display: flex;
-    th {
+  thead {
+    .weekday {
+      display: flex;
+      th {
         padding: 8px 0;
         width: 200px;
-        background-color: $right-blue;
+        background-color: $light-blue;
         color: $dark-blue;
         font-size: 1rem;
         border-right: 1px solid $calendar-border;
@@ -84,10 +85,10 @@ thead {
         }
 
         &.saturday {
-         color: $blue;
+          color: $blue;
         }
+      }
     }
   }
-}
 }
 </style>

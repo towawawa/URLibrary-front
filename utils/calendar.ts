@@ -8,18 +8,15 @@ import type { UrlLibrary } from '@/types/api/urlLibrary';
  * @param rowIndex
  * @returns
  */
-export function getDateClass(day: number, rowIndex: number) {
-  let dateClass = 'date';
-
-  // 1行目かつ日付が26日以上 or 5行目or6行目かつ日付が6日以下の場合、先来月の日付なので、クラスを追加
-  if (
-    (rowIndex === 0 && day >= 26) ||
-    ((rowIndex === 4 || rowIndex === 5) && day <= 6)
-  ) {
-    dateClass += ' next-month';
+export function getDateClass(day: number, recordIndex: number) {
+  // 他月の日付に対するクラスを追加
+  if (recordIndex === 0 && day > 20) {
+    return 'another-month'; // 先月
+  } else if (recordIndex >= 4 && day < 15) {
+    return 'another-month'; // 来月
   }
 
-  return dateClass;
+  return '';
 }
 
 export type Weeks = [string, string, string, string, string, string, string][];

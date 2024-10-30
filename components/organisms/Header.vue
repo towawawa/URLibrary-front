@@ -5,11 +5,16 @@ const searchForm = useForm(
   { keyword: '検索ワード' },
 );
 
-// @todo URL追加機能を実装
+const showRegisterUrlPopup = ref(false);
+
 // @todo ログアウト機能を実装
 </script>
 
 <template>
+  <OrganismsUrlLibraryPopupRegister
+    v-if="showRegisterUrlPopup"
+    @close="showRegisterUrlPopup = false;"
+  />
   <header>
     <div class="above">
       <nuxt-link class="logo" to="/"> URLibrary </nuxt-link>
@@ -24,7 +29,9 @@ const searchForm = useForm(
           @change="searchForm.update('keyword', $event)"
         />
       </div>
-      <AtomsBtn class="ml-10">URLを追加</AtomsBtn>
+      <AtomsBtn class="ml-10" @click="showRegisterUrlPopup = true"
+        >URLを追加</AtomsBtn
+      >
       <p class="mr-0">User1</p>
     </div>
 
@@ -113,7 +120,7 @@ header {
         }
 
         &:hover {
-          background-color: $gray;
+          background-color: $hover;
         }
       }
     }
