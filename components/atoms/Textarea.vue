@@ -1,14 +1,12 @@
 <script setup lang="ts" generic="T extends number | string | null">
 type Props = {
   class?: string;
-  type?: 'month' | 'email' | 'number' | 'password' | 'text';
   value: T;
   errorMessage?: string;
 };
 
 const props = withDefaults(defineProps<Props>(), {
   class: '',
-  type: 'text',
   errorMessage: '',
 });
 
@@ -23,12 +21,13 @@ const onChange = (event: Event): void => {
 
 <template>
   <div :class="['input-container', props.class]">
-    <input
+    <textarea
       :value="props.value"
-      :type="props.type"
       :class="{ 'is-error': props.errorMessage }"
       @change="onChange($event)"
-    />
+    >
+    {{ props.value }}
+    </textarea>
     <p v-if="props.errorMessage" class="error-message">
       {{ props.errorMessage }}
     </p>
@@ -39,8 +38,9 @@ const onChange = (event: Event): void => {
 .input-container {
   position: relative;
   padding-bottom: 10px;
-  input {
+  textarea {
     width: 100%;
+    height: 200px;
     padding: 8px;
     border: 1px solid $border;
     border-radius: 4px;

@@ -24,18 +24,9 @@ dayjs.locale('ja');
 export { dayjs };
 
 export default defineNuxtPlugin(() => {
-  const formatDateTime = (date: string, option?: 'withWeekday') => {
-    if (option === 'withWeekday') {
-      return dayjs(date).format('YYYY/MM/DD (ddd)');
-    }
-
-    return dayjs(date).format('YYYY/MM/DD');
-  };
-
   return {
     provide: {
       dayjs,
-      formatDateTime,
     },
   };
 });
