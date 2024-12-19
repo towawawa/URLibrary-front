@@ -44,6 +44,8 @@ const fetchOGP = async (url: string) => {
 
 const emits = defineEmits<{
   (event: 'click-note'): void;
+  (event: 'click-edit'): void;
+  (event: 'click-delete'): void;
 }>();
 
 // コンポーネントがマウントされたときにOGP画像を取得
@@ -55,7 +57,11 @@ onMounted(() => {
 <template>
   <li>
     <div class="left-block">
-      <img class="pencil" src="@/assets/images/pencil-icon.svg" />
+      <img
+        class="pencil"
+        src="@/assets/images/pencil-icon.svg"
+        @click="emits('click-edit')"
+      />
     </div>
     <a class="center-block" :href="props.data.url" target="_blank">
       <div>
@@ -79,7 +85,11 @@ onMounted(() => {
         src="@/assets/images/note-icon.svg"
         @click="emits('click-note')"
       />
-      <img class="trash" src="@/assets/images/trash-icon.svg" />
+      <img
+        class="trash"
+        src="@/assets/images/trash-icon.svg"
+        @click="emits('click-delete')"
+      />
     </div>
   </li>
 </template>

@@ -8,6 +8,8 @@ const form = useForm<{
 });
 const urlLibraries = ref<UrlLibrary[]>([]);
 const showNoteId = ref<number | null>(null);
+const showEditPopupId = ref<number | null>(null);
+const showDeletePopupId = ref<number | null>(null);
 
 const setUrlLibraries = async () => {
   const query = {
@@ -17,6 +19,13 @@ const setUrlLibraries = async () => {
 
   await fetcher('GET', '/url-libraries', { query }).then((res) => {
     urlLibraries.value = res.data as UrlLibrary[];
+  });
+};
+
+const deleteUrlLibrary = async (id: number) => {
+  await fetcher('DELETE', `/url-libraries/${id}`).then(() => {
+    setUrlLibraries();
+    showDeletePopupId.value = null;
   });
 };
 
@@ -48,12 +57,35 @@ await setUrlLibraries();
       <OrganismsUrlLibraryList
         :data="urlLibraries"
         @click-note="showNoteId = $event"
+        @click-edit="showEditPopupId = $event"
+        @click-delete="showDeletePopupId = $event"
       />
     </div>
     <div v-if="showNoteId" class="right-block">
       <OrganismsUrlLibraryNote :id="showNoteId" @close="showNoteId = null" />
     </div>
   </div>
+
+  <OrganismsUrlLibraryPopupEdit
+    v-if="showEditPopupId"
+    :id="showEditPopupId"
+    @close="showEditPopupId = null"
+    @updated="
+      setUrlLibraries();
+      showNoteId = null;
+    "
+  />
+
+  <OrganismsConfirmPopup
+    v-if="showDeletePopupId"
+    message="本当に削除しますか？"
+    @close="showDeletePopupId = null"
+    @confirm="
+      deleteUrlLibrary(showDeletePopupId);
+      showNoteId = null;
+      showDeletePopupId = null;
+    "
+  />
 </template>
 
 <style lang="scss" scoped>

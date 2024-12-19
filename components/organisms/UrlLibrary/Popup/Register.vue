@@ -1,8 +1,6 @@
 <script lang="ts" setup>
 import { initialData, validations, names } from '@/utils/forms/urlLibrary';
 
-// 認証エラーが表示されるかどうか
-const showLoginError = ref(false);
 const form = useForm(initialData, validations, names);
 
 const register = () => {
