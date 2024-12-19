@@ -1,3 +1,11 @@
+<script lang="ts" setup>
+import Index from '@/components/organisms/UrlLibrary/Index.vue';
+</script>
+
 <template>
-  <div>top</div>
+  <div class="top-content">
+    <Index />
+  </div>
 </template>
+
+<style lang="scss"></style>

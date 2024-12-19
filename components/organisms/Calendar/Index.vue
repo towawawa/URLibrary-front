@@ -1,15 +1,18 @@
 <script lang="ts" setup>
+// 現在の年月を取得
+const { $dayjs } = useNuxtApp();
+const ym = $dayjs().format('YYYY-MM');
+
 const form = useForm<{
   ym: string;
   hashTagId: number | null;
   genreId: number | null;
 }>({
-  ym: '2024-10',
+  ym,
   hashTagId: null,
   genreId: null,
 });
 const urlLibraries = ref<UrlLibrary[]>([]);
-const { $dayjs } = useNuxtApp();
 
 const setUrlLibraries = async () => {
   const query = {
