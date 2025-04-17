@@ -5,4 +5,6 @@ export type UrlLibrary = {
   note: string;
   createdAt: string;
   updatedAt: string;
+  genre: Genre;
+  hashTags: HashTag[];
 };
