@@ -214,32 +214,6 @@ const getDefaultIcon = (genreName: string) => {
 
         <!-- Mobile menu -->
         <div class="mobile-menu">
-          <!-- Mobile search -->
-          <div class="mobile-search">
-            <div class="search-input">
-              <i class="fas fa-search search-icon"></i>
-              <AtomsInput
-                class="search-field"
-                :value="searchForm.data.keyword"
-                :error-message="searchForm.firstError('keyword')"
-                placeholder="タイトルで検索..."
-                @change="searchForm.update('keyword', $event)"
-                @keyup.enter="searchForm.pushWithQuery('/')"
-              />
-              <button
-                v-if="searchForm.data.keyword"
-                @click="
-                  searchForm.update('keyword', '');
-                  searchForm.pushWithQuery('/');
-                "
-                class="clear-btn"
-                type="button"
-              >
-                <i class="fas fa-times"></i>
-              </button>
-            </div>
-          </div>
-
           <!-- Genre filter button -->
           <div class="genre-menu-dropdown mobile-only">
             <button
@@ -364,7 +338,7 @@ const getDefaultIcon = (genreName: string) => {
 .header-main {
   display: flex;
   align-items: center;
-  padding: 0.75rem 1.5rem 0.75rem calc(1.5rem + 280px); /* 左側にサイドメニューの幅分を追加 */
+  padding: 0.75rem 1.5rem 0.75rem calc(1.5rem + 30px); /* 左側にサイドメニューの幅分を追加 */
   width: 100%;
 }
 
@@ -681,39 +655,6 @@ const getDefaultIcon = (genreName: string) => {
   display: none;
   align-items: center;
   gap: 0.75rem;
-
-  .mobile-search {
-    flex: 1;
-    max-width: 200px;
-
-    .search-input {
-      display: flex;
-      align-items: center;
-      background: $gray-50;
-      border-radius: 6px;
-      border: 1px solid $border;
-
-      .search-btn {
-        padding: 0.375rem;
-        background: none;
-        border: none;
-        color: $text-muted;
-
-        i {
-          font-size: 0.85rem;
-        }
-      }
-
-      .search-field {
-        flex: 1;
-        border: none;
-        background: transparent;
-        outline: none;
-        font-size: 0.85rem;
-        padding: 0.375rem 0.375rem 0.375rem 0;
-      }
-    }
-  }
 }
 
 .nav-section {

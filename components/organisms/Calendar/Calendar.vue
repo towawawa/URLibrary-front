@@ -50,8 +50,10 @@ const weekdays = [
           class="weekday-header"
           :class="day.class"
         >
-          <span class="weekday-jp">{{ day.jp }}</span>
-          <span class="weekday-en">{{ day.en }}</span>
+          <div class="weekday-container">
+            <span class="weekday-jp">{{ day.jp }}</span>
+            <span class="weekday-en">{{ day.en }}</span>
+          </div>
         </div>
       </div>
 
@@ -97,7 +99,7 @@ const weekdays = [
     border-bottom: 1px solid $border;
 
     .weekday-header {
-      padding: 0.5rem 0.375rem;
+      padding: 0.375rem 0.25rem;
       text-align: center;
       font-weight: 600;
       font-size: 0.8rem;
@@ -108,14 +110,19 @@ const weekdays = [
         border-right: none;
       }
 
+      .weekday-container {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.5rem;
+      }
+
       .weekday-jp {
-        display: block;
         font-size: 0.85rem;
-        margin-bottom: 0.125rem;
+        font-weight: 600;
       }
 
       .weekday-en {
-        display: block;
         font-size: 0.6rem;
         color: $text-muted;
         font-weight: 500;
@@ -142,7 +149,7 @@ const weekdays = [
     grid-template-columns: repeat(7, 1fr);
 
     :deep(.calendar-cell) {
-      min-height: 100px;
+      min-height: 130px; // 100pxから130pxに増加
       border-right: 1px solid $border;
       border-bottom: 1px solid $border;
 
@@ -179,7 +186,7 @@ const weekdays = [
     }
 
     .calendar-body :deep(.calendar-cell) {
-      min-height: 80px;
+      min-height: 110px; // 80pxから110pxに増加
     }
   }
 }
@@ -197,17 +204,21 @@ const weekdays = [
     .calendar-header .weekday-header {
       padding: 0.25rem 0.125rem;
 
+      .weekday-container {
+        gap: 0.375rem;
+      }
+
       .weekday-jp {
-        font-size: 0.75rem;
+        font-size: 0.8rem;
       }
 
       .weekday-en {
-        display: none;
+        font-size: 0.55rem;
       }
     }
 
     .calendar-body :deep(.calendar-cell) {
-      min-height: 70px;
+      min-height: 90px; // 70pxから90pxに増加
     }
   }
 }
@@ -225,7 +236,7 @@ const weekdays = [
     }
 
     .calendar-body :deep(.calendar-cell) {
-      min-height: 60px;
+      min-height: 80px; // 60pxから80pxに増加
     }
   }
 }

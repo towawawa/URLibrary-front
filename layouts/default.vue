@@ -67,9 +67,14 @@ await initAuth();
   background: $background;
 
   &--login {
+    display: flex;
     justify-content: center;
     align-items: center;
+    min-height: 100vh;
+    width: 100vw;
     padding: 1rem;
+    background: $background;
+    box-sizing: border-box;
   }
 
   .desktop-sidebar {
@@ -111,7 +116,6 @@ await initAuth();
     display: flex;
     flex-direction: column;
     min-width: 0;
-    margin-left: 280px; /* サイドバーの幅分マージンを追加 */
 
     .content-wrapper {
       flex: 1;
@@ -120,6 +124,11 @@ await initAuth();
       margin: 0 auto;
       width: 100%;
     }
+  }
+
+  // ログイン時以外でのみサイドバーマージンを適用
+  &:not(.app-layout--login) .main-content {
+    margin-left: 280px; /* サイドバーの幅分マージンを追加 */
   }
 }
 
@@ -158,7 +167,7 @@ await initAuth();
     }
 
     .main-content {
-      margin-left: 0; /* モバイル時はマージンなし */
+      margin-left: 0 !important; /* モバイル時はマージンなし */
 
       .content-wrapper {
         padding: 1rem;
@@ -175,6 +184,8 @@ await initAuth();
   .app-layout {
     &--login {
       padding: 0.75rem;
+      justify-content: center;
+      align-items: center;
     }
 
     .main-content .content-wrapper {

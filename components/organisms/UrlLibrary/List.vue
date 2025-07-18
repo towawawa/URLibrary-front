@@ -87,7 +87,7 @@ const emits = defineEmits<{
 
 <style lang="scss" scoped>
 .url-library-list {
-  width: 100%;
+  width: 97%;
 
   .url-list {
     display: flex;

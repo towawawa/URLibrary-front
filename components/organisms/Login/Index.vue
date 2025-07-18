@@ -57,26 +57,21 @@ const handleGoogleLogin = () => {
         <i class="fas fa-user-plus"></i>
         アカウント作成
       </AtomsLinkBtn>
-      <AtomsLinkBtn
-        to="/password-reset"
-        color="text"
-        class="password-reset-link"
-      >
-        パスワードをお忘れの方はこちら
-      </AtomsLinkBtn>
     </div>
   </div>
 </template>
 
 <style lang="scss" scoped>
 .login-container {
-  display: block;
+  display: flex;
+  flex-direction: column;
   margin: 0 auto;
-  width: 600px;
+  max-width: 450px;
+  width: 100%;
   background-color: $white;
-  padding: 30px 100px;
-  border-radius: 10px;
-  text-align: center;
+  padding: 2rem;
+  border-radius: 12px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
 
   .auth-error {
     i {
@@ -93,11 +88,6 @@ const handleGoogleLogin = () => {
     border-radius: 10px;
     padding: 10px;
     margin-bottom: 10px;
-  }
-
-  .login-form {
-    display: flex;
-    flex-direction: column;
   }
 
   .divider {
@@ -124,13 +114,13 @@ const handleGoogleLogin = () => {
   }
 
   .google-btn {
-    margin: 0 auto 1rem;
+    margin-bottom: 1rem;
   }
 
   .auth-links {
     display: flex;
     flex-direction: column;
-    align-items: center;
+    align-items: stretch;
     gap: 1rem;
     margin-top: 1rem;
 
@@ -168,33 +158,32 @@ const handleGoogleLogin = () => {
         transform: translateY(0);
       }
     }
-
-    .password-reset-link {
-      margin-top: 0.5rem;
-    }
   }
 }
 
 // レスポンシブ対応
 @media (max-width: 768px) {
   .login-container {
-    padding: 20px 50px;
+    max-width: 400px;
+    padding: 1.5rem;
+    margin: 0 auto;
   }
 }
 
 @media (max-width: 480px) {
   .login-container {
-    padding: 20px 30px;
-    width: 90%;
-  }
+    max-width: none;
+    margin: 0 auto;
+    padding: 1rem;
 
-  .auth-links {
-    .signup-link {
-      padding: 0.75rem 0.875rem;
-      font-size: 0.9rem;
+    .auth-links {
+      .signup-link {
+        padding: 0.75rem 0.875rem;
+        font-size: 0.9rem;
 
-      i {
-        font-size: 0.85rem;
+        i {
+          font-size: 0.85rem;
+        }
       }
     }
   }

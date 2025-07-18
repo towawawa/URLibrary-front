@@ -22,7 +22,7 @@ const isSaturday = props.dayIndex === 6;
 
 // 表示制御
 const isExpanded = ref(false);
-const INITIAL_DISPLAY_COUNT = 3;
+const INITIAL_DISPLAY_COUNT = 2; // 3から2に変更
 
 const visibleData = computed(() => {
   if (isExpanded.value || props.data.length <= INITIAL_DISPLAY_COUNT) {
@@ -58,9 +58,6 @@ const toggleExpanded = () => {
         }"
       >
         {{ day }}
-      </span>
-      <span v-if="data.length > 0" class="count-badge">
-        {{ data.length }}
       </span>
     </div>
 
@@ -99,6 +96,9 @@ const toggleExpanded = () => {
   transition: all 0.2s ease;
   position: relative;
   cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
 
   &:hover {
     background: $gray-50;
@@ -141,27 +141,16 @@ const toggleExpanded = () => {
         color: $blue;
       }
     }
-
-    .count-badge {
-      background: $primary;
-      color: $white;
-      font-size: 0.6rem;
-      font-weight: 600;
-      padding: 0.0625rem 0.25rem;
-      border-radius: 8px;
-      min-width: 1rem;
-      text-align: center;
-    }
   }
 
   .url-list {
-    min-height: 2rem;
-    max-height: 4rem;
+    flex: 1;
+    height: 100%;
     overflow: hidden;
     transition: max-height 0.3s ease;
 
     &.expanded {
-      max-height: 12rem;
+      max-height: calc(100% - 2rem);
       overflow-y: auto;
 
       /* カスタムスクロールバー */
@@ -247,8 +236,7 @@ const toggleExpanded = () => {
     }
 
     .url-list {
-      min-height: 1.75rem;
-      max-height: 3.5rem;
+      height: 100%;
 
       &.expanded {
         max-height: 10rem;
@@ -278,16 +266,10 @@ const toggleExpanded = () => {
         width: 1.125rem;
         height: 1.125rem;
       }
-
-      .count-badge {
-        font-size: 0.55rem;
-        padding: 0.0625rem 0.1875rem;
-      }
     }
 
     .url-list {
-      min-height: 1.5rem;
-      max-height: 3rem;
+      height: 100%;
 
       &.expanded {
         max-height: 8rem;
@@ -317,16 +299,10 @@ const toggleExpanded = () => {
         width: 1rem;
         height: 1rem;
       }
-
-      .count-badge {
-        font-size: 0.5rem;
-        padding: 0.0625rem 0.125rem;
-      }
     }
 
     .url-list {
-      min-height: 1.25rem;
-      max-height: 2.5rem;
+      height: 100%;
 
       &.expanded {
         max-height: 6rem;

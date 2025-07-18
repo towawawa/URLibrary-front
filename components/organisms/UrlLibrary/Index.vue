@@ -126,7 +126,6 @@ await setUrlLibraries();
     display: inline-block;
 
     .search-block {
-      margin-left: 25px;
       margin-bottom: 20px;
     }
   }
