@@ -135,17 +135,27 @@ const getDefaultIcon = (genreName: string) => {
       <!-- Desktop search -->
       <div class="search-container desktop-only">
         <div class="search-input">
-          <button @click="searchForm.pushWithQuery('/')" class="search-btn">
-            <i class="fas fa-search"></i>
-          </button>
+          <i class="fas fa-search search-icon"></i>
           <AtomsInput
             class="search-field"
             :value="searchForm.data.keyword"
             :error-message="searchForm.firstError('keyword')"
-            placeholder="URLを検索..."
+            placeholder="タイトルで検索..."
             size="lg"
             @change="searchForm.update('keyword', $event)"
+            @keyup.enter="searchForm.pushWithQuery('/')"
           />
+          <button
+            v-if="searchForm.data.keyword"
+            @click="
+              searchForm.update('keyword', '');
+              searchForm.pushWithQuery('/');
+            "
+            class="clear-btn"
+            type="button"
+          >
+            <i class="fas fa-times"></i>
+          </button>
         </div>
       </div>
 
@@ -207,16 +217,26 @@ const getDefaultIcon = (genreName: string) => {
           <!-- Mobile search -->
           <div class="mobile-search">
             <div class="search-input">
-              <button @click="searchForm.pushWithQuery('/')" class="search-btn">
-                <i class="fas fa-search"></i>
-              </button>
+              <i class="fas fa-search search-icon"></i>
               <AtomsInput
                 class="search-field"
                 :value="searchForm.data.keyword"
                 :error-message="searchForm.firstError('keyword')"
-                placeholder="URLを検索..."
+                placeholder="タイトルで検索..."
                 @change="searchForm.update('keyword', $event)"
+                @keyup.enter="searchForm.pushWithQuery('/')"
               />
+              <button
+                v-if="searchForm.data.keyword"
+                @click="
+                  searchForm.update('keyword', '');
+                  searchForm.pushWithQuery('/');
+                "
+                class="clear-btn"
+                type="button"
+              >
+                <i class="fas fa-times"></i>
+              </button>
             </div>
           </div>
 
@@ -344,7 +364,7 @@ const getDefaultIcon = (genreName: string) => {
 .header-main {
   display: flex;
   align-items: center;
-  padding: 0.75rem 1.5rem; // 左右の余白を増加
+  padding: 0.75rem 1.5rem 0.75rem calc(1.5rem + 280px); /* 左側にサイドメニューの幅分を追加 */
   width: 100%;
 }
 
@@ -370,29 +390,52 @@ const getDefaultIcon = (genreName: string) => {
     position: relative;
     display: flex;
     align-items: center;
-    background: $gray-50;
-    border-radius: 8px;
-    border: 1px solid $border;
-    transition: border-color 0.2s ease;
+    background: $white;
+    border: 2px solid $border-light;
+    border-radius: 12px;
+    overflow: hidden;
+    transition: all 0.2s ease;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+
+    &:hover {
+      border-color: $primary-light;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
 
     &:focus-within {
       border-color: $primary;
-      box-shadow: 0 0 0 2px rgba(116, 160, 67, 0.1);
+      box-shadow: 0 0 0 3px rgba(116, 160, 67, 0.15);
     }
 
-    .search-btn {
-      padding: 0.75rem;
+    .search-icon {
+      position: absolute;
+      left: 1rem;
+      color: $text-muted;
+      font-size: 1rem;
+      z-index: 2;
+      transition: color 0.2s ease;
+    }
+
+    &:focus-within .search-icon {
+      color: $primary;
+    }
+
+    .clear-btn {
+      position: absolute;
+      right: 0.5rem;
       background: none;
       border: none;
       color: $text-muted;
       cursor: pointer;
-
-      i {
-        font-size: 1rem;
-      }
+      font-size: 0.9rem;
+      padding: 0.5rem;
+      border-radius: 50%;
+      z-index: 2;
+      transition: all 0.2s ease;
 
       &:hover {
-        color: $primary;
+        background: $gray-100;
+        color: $error;
       }
     }
 
@@ -401,8 +444,15 @@ const getDefaultIcon = (genreName: string) => {
       border: none;
       background: transparent;
       outline: none;
+      padding: 0.75rem 3rem; /* Left padding for icon, right for clear button */
+      font-size: 0.9rem;
+
+      &::placeholder {
+        color: $text-muted;
+      }
 
       &:focus {
+        border: none;
         box-shadow: none;
       }
     }

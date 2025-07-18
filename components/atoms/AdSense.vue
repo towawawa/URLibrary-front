@@ -21,14 +21,30 @@ const isAdSenseLoaded = computed(() => {
   return typeof window !== 'undefined' && window.adsbygoogle;
 });
 
+// デバッグ情報
+const debugInfo = computed(() => {
+  if (typeof window === 'undefined') {
+    return 'サーバーサイドレンダリング中';
+  }
+
+  if (!window.adsbygoogle) {
+    return 'AdSenseスクリプトが読み込まれていません';
+  }
+
+  return 'AdSenseスクリプト読み込み完了';
+});
+
 // 広告を初期化
 onMounted(() => {
   if (isAdSenseLoaded.value) {
     try {
       (window.adsbygoogle = window.adsbygoogle || []).push({});
+      console.log('AdSense広告を初期化しました:', props.adSlot);
     } catch (error) {
       console.error('AdSense initialization error:', error);
     }
+  } else {
+    console.warn('AdSenseスクリプトが利用できません');
   }
 });
 

@@ -61,12 +61,7 @@ const emits = defineEmits<{
           <AtomsAdSense
             ad-slot="1200848053"
             ad-format="auto"
-            style="
-              display: block;
-              max-width: 320px;
-              height: 100px;
-              margin: 0 auto;
-            "
+            style="display: block; max-width: 320px; margin: 0 auto"
             class="content-ad"
           />
         </div>
@@ -106,10 +101,28 @@ const emits = defineEmits<{
       border-radius: 6px;
       border: 1px solid $border-light;
       text-align: center;
+      max-height: 120px !important; /* コンテンツ内広告の高さ制限 */
+      overflow: hidden !important;
 
       .content-ad {
         max-width: 320px;
         margin: 0 auto;
+        height: 100px !important;
+        max-height: 100px !important;
+
+        .adsbygoogle {
+          height: 100px !important;
+          max-height: 100px !important;
+          width: 100% !important;
+          max-width: 320px !important;
+        }
+
+        iframe {
+          height: 100px !important;
+          max-height: 100px !important;
+          width: 100% !important;
+          max-width: 320px !important;
+        }
       }
     }
   }
