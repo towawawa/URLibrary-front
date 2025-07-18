@@ -123,6 +123,16 @@ const getDefaultIcon = (genreName: string) => {
     @click="closeMenusOnOutsideClick"
   ></div>
 
+  <!-- トップバナー広告 -->
+  <div class="top-banner-ad">
+    <AtomsAdSense
+      ad-slot="YOUR_BANNER_AD_SLOT_ID"
+      ad-format="auto"
+      style="display: block; max-width: 970px; height: 90px"
+      class="banner-ad"
+    />
+  </div>
+
   <header class="header">
     <!-- Main header -->
     <div class="header-main">
@@ -322,6 +332,21 @@ const getDefaultIcon = (genreName: string) => {
 </template>
 
 <style lang="scss" scoped>
+.top-banner-ad {
+  background: $gray-50;
+  border-bottom: 1px solid $border-light;
+  padding: 0.5rem 0;
+  text-align: center;
+  position: sticky;
+  top: 0;
+  z-index: 1001;
+
+  .banner-ad {
+    margin: 0 auto;
+    max-width: 970px;
+  }
+}
+
 .menu-overlay {
   position: fixed;
   top: 0;

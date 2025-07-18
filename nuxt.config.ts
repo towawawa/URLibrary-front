@@ -19,6 +19,13 @@ export default defineNuxtConfig({
           href: 'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css',
         },
       ],
+      script: [
+        {
+          async: true,
+          src: 'https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6623660361885724',
+          crossorigin: 'anonymous',
+        },
+      ],
     },
   },
 
@@ -52,6 +59,7 @@ export default defineNuxtConfig({
     public: {
       apiBaseUrl:
         process.env.NUXT_PUBLIC_API_BASE_URL || 'http://localhost:8080/api',
+      adsenseClientId: 'ca-pub-6623660361885724',
     },
   },
 });
