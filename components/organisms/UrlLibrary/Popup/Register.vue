@@ -24,7 +24,7 @@ const emits = defineEmits(['close']);
   <MoleculesPopupFrame @close="emits('close')">
     <div class="register-container">
       <OrganismsUrlLibraryPopupForm :form="form" />
-      <AtomsBtn class="mx-auto mt-5" @click="register()">登録</AtomsBtn>
+      <AtomsBtn class="mx-auto mt-5" size="lg" fullWidth @click="register()">登録</AtomsBtn>
     </div>
   </MoleculesPopupFrame>
 </template>

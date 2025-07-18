@@ -14,10 +14,10 @@ const emits = defineEmits(['close', 'confirm']);
   <MoleculesPopupFrame @close="emits('close')">
     <p>{{ props.message }}</p>
     <div class="button-area">
-      <AtomsBtn class="confirm-btn" color="primary" @click="emits('confirm')">
+      <AtomsBtn class="confirm-btn" variant="danger" size="md" @click="emits('confirm')">
         OK
       </AtomsBtn>
-      <AtomsBtn class="cancel-btn" color="gray" @click="emits('close')">
+      <AtomsBtn class="cancel-btn" variant="secondary" size="md" @click="emits('close')">
         キャンセル
       </AtomsBtn>
     </div>
