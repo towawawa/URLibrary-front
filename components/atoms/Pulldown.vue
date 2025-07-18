@@ -46,7 +46,6 @@ function onSelected(value: Value): void {
       :options="props.options"
       :label="props.labelProp"
       :reduce="(option: Option) => option[props.valueProp]"
-      append-to-body
       @update:model-value="onSelected"
     >
       <template #no-options>

@@ -16,7 +16,6 @@ const genreForm = useForm(
   initialData,
   {
     name: ['required', 'max:255'],
-    image: ['max:5120'],
   },
   names,
 );
@@ -56,48 +55,21 @@ const toggleAddGenreForm = () => {
   }
 };
 
-const submitGenre = async () => {
-  if (genreForm.allValidate()) return;
+const handleSubmit = async () => {
+  if (genreForm.allValidate()) return; // バリデーションエラーがある場合は終了
 
   isSubmitting.value = true;
 
   try {
-    const formData = new FormData();
-    formData.append('name', genreForm.data.name);
-    if (genreForm.data.image) {
-      formData.append('image', genreForm.data.image);
-    }
-
-    await fetcher('POST', '/genres', {
-      body: formData,
-    });
-
-    // 成功時はジャンル一覧を再取得してフォームを閉じる
+    await fetcher('POST', '/genres', { body: genreForm.data });
     await setGenres();
-    Object.assign(genreForm.data, initialData);
-    genreForm.errors.value = {};
-    showAddGenreForm.value = false;
+    toggleAddGenreForm();
   } catch (err: any) {
     if (err.status === 422) {
       genreForm.setErrors(err._data.errors);
-    } else {
-      console.error('ジャンルの追加に失敗しました:', err);
     }
   } finally {
     isSubmitting.value = false;
-  }
-};
-
-const handleImageChange = (file: File | null) => {
-  genreForm.update('image', file);
-};
-
-const handleImageError = (event: Event) => {
-  const target = event.target as HTMLImageElement;
-  const nextIcon = target.nextElementSibling as HTMLElement;
-  if (target && nextIcon) {
-    target.style.display = 'none';
-    nextIcon.style.display = 'flex';
   }
 };
 
@@ -115,7 +87,7 @@ const getDefaultIcon = (genreName: string) => {
     HTML: 'fab fa-html5',
     CSS: 'fab fa-css3-alt',
     SCSS: 'fab fa-sass',
-    TypeScript: 'fab fa-js-square', // TypeScript用のアイコンがないのでJSで代用
+    TypeScript: 'fab fa-js-square',
     Laravel: 'fab fa-laravel',
     Symfony: 'fab fa-symfony',
     WordPress: 'fab fa-wordpress',
@@ -133,69 +105,53 @@ const getDefaultIcon = (genreName: string) => {
   return defaultIcons[genreName] || 'fas fa-folder';
 };
 
-await setGenres();
+setGenres();
 </script>
 
 <template>
   <div class="side-menu">
-    <div class="genre-section">
-      <div class="genre-header">
-        <h3>
-          <i class="fas fa-folder-open"></i>
-          ジャンル
-        </h3>
+    <!-- ジャンル追加フォーム -->
+    <div class="add-genre-section">
+      <div class="add-genre-header">
         <button
           class="add-genre-btn"
           :class="{ active: showAddGenreForm }"
           @click="toggleAddGenreForm"
         >
           <i class="fas" :class="showAddGenreForm ? 'fa-times' : 'fa-plus'"></i>
+          {{ showAddGenreForm ? 'キャンセル' : 'ジャンル追加' }}
         </button>
       </div>
 
-      <!-- ジャンル追加フォーム -->
-      <div v-if="showAddGenreForm" class="add-genre-form">
-        <div class="form-group">
-          <label>ジャンル名</label>
-          <AtomsInput
-            :value="genreForm.data.name"
-            :error-message="genreForm.firstError('name')"
-            placeholder="ジャンル名を入力"
-            @change="genreForm.update('name', $event)"
-          />
-        </div>
+      <!-- 展開可能なフォーム -->
+      <Transition name="slide">
+        <div v-if="showAddGenreForm" class="add-genre-form">
+          <form @submit.prevent="handleSubmit">
+            <div class="form-group">
+              <label class="form-label">ジャンル名</label>
+              <AtomsInput
+                :value="genreForm.data.name"
+                :error-message="genreForm.firstError('name')"
+                placeholder="例: JavaScript, PHP..."
+                @change="genreForm.update('name', $event)"
+              />
+            </div>
 
-        <div class="form-group">
-          <label>アイコン画像（任意）</label>
-          <AtomsFileInput
-            accept="image/*"
-            :error-message="genreForm.firstError('image')"
-            @change="handleImageChange"
-          />
-          <p class="file-note">
-            未設定の場合はデフォルトアイコンが表示されます
-          </p>
+            <div class="form-actions">
+              <AtomsBtn
+                type="submit"
+                variant="primary"
+                size="sm"
+                :disabled="isSubmitting"
+                fullWidth
+              >
+                <i v-if="isSubmitting" class="fas fa-spinner fa-spin"></i>
+                {{ isSubmitting ? '追加中...' : '追加' }}
+              </AtomsBtn>
+            </div>
+          </form>
         </div>
-
-        <div class="form-actions">
-          <button
-            class="cancel-btn"
-            @click="toggleAddGenreForm"
-            :disabled="isSubmitting"
-          >
-            キャンセル
-          </button>
-          <button
-            class="submit-btn"
-            @click="submitGenre"
-            :disabled="isSubmitting || !genreForm.data.name.trim()"
-          >
-            <i v-if="isSubmitting" class="fas fa-spinner fa-spin"></i>
-            <i v-else class="fas fa-plus"></i>
-            {{ isSubmitting ? '追加中...' : '追加' }}
-          </button>
-        </div>
-      </div>
+      </Transition>
     </div>
 
     <!-- ジャンル一覧 -->
@@ -221,13 +177,7 @@ await setGenres();
           @click="pushQueryGenreId(genre.id)"
         >
           <div class="genre-icon">
-            <img
-              v-if="genre.imagePath"
-              :src="genre.imagePath"
-              :alt="genre.name"
-              @error="handleImageError"
-            />
-            <i v-else :class="getDefaultIcon(genre.name)"></i>
+            <i :class="getDefaultIcon(genre.name)"></i>
           </div>
           <span class="genre-name">{{ genre.name }}</span>
         </li>
@@ -261,155 +211,90 @@ await setGenres();
   top: 0;
 }
 
-.genre-section {
-  .genre-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 1rem;
-    padding: 0.75rem;
-    background: $gray-50;
-    border-radius: 8px;
+.add-genre-section {
+  margin-bottom: 1.5rem;
+  border-bottom: 1px solid $border-light;
+  padding-bottom: 1rem;
 
-    h3 {
-      font-size: 1rem;
-      font-weight: 600;
-      color: $text;
-      margin: 0;
+  .add-genre-header {
+    margin-bottom: 0.75rem;
+
+    .add-genre-btn {
       display: flex;
       align-items: center;
       gap: 0.5rem;
-
-      i {
-        color: $primary;
-        font-size: 0.9rem;
-      }
-    }
-
-    .add-genre-btn {
-      background: $primary;
-      color: $white;
-      border: none;
-      border-radius: 50%;
-      width: 28px;
-      height: 28px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
+      width: 100%;
+      padding: 0.75rem 1rem;
+      background: $primary-light;
+      color: $primary-dark;
+      border: 1px solid $primary;
+      border-radius: 8px;
+      font-size: 0.85rem;
+      font-weight: 500;
       cursor: pointer;
       transition: all 0.2s ease;
-      font-size: 0.8rem;
 
       &:hover {
-        background: $primary-hover;
-        transform: scale(1.1);
+        background: $primary;
+        color: $white;
       }
 
       &.active {
-        background: $error;
+        background: $error-light;
+        color: $error;
+        border-color: $error;
 
         &:hover {
-          background: darken($error, 10%);
+          background: $error;
+          color: $white;
         }
+      }
+
+      i {
+        font-size: 0.8rem;
       }
     }
   }
 
   .add-genre-form {
     background: $gray-50;
-    border: 1px solid $border;
     border-radius: 8px;
     padding: 1rem;
-    margin-bottom: 1rem;
-    animation: slideDown 0.3s ease;
 
     .form-group {
       margin-bottom: 1rem;
 
-      label {
+      .form-label {
         display: block;
-        font-size: 0.85rem;
-        font-weight: 500;
+        font-size: 0.8rem;
+        font-weight: 600;
         color: $text;
         margin-bottom: 0.5rem;
-      }
-
-      .file-note {
-        font-size: 0.75rem;
-        color: $text-muted;
-        margin-top: 0.25rem;
-        margin-bottom: 0;
       }
     }
 
     .form-actions {
-      display: flex;
-      gap: 0.5rem;
       margin-top: 1rem;
-
-      button {
-        flex: 1;
-        padding: 0.5rem;
-        border: none;
-        border-radius: 6px;
-        font-size: 0.8rem;
-        font-weight: 500;
-        cursor: pointer;
-        transition: all 0.2s ease;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        gap: 0.375rem;
-
-        &:disabled {
-          opacity: 0.6;
-          cursor: not-allowed;
-        }
-      }
-
-      .cancel-btn {
-        background: $gray-200;
-        color: $text;
-
-        &:hover:not(:disabled) {
-          background: $gray-300;
-        }
-      }
-
-      .submit-btn {
-        background: $primary;
-        color: $white;
-
-        &:hover:not(:disabled) {
-          background: $primary-hover;
-        }
-
-        .fa-spinner {
-          animation: spin 1s linear infinite;
-        }
-      }
     }
   }
 }
 
 .genre-list {
-  margin-bottom: 2rem;
-
   ul {
     list-style: none;
-    margin: 0;
     padding: 0;
+    margin: 0;
   }
 
   .genre-item {
     display: flex;
     align-items: center;
-    padding: 0.75rem;
-    margin-bottom: 0.25rem;
+    gap: 0.75rem;
+    padding: 0.75rem 1rem;
     border-radius: 8px;
     cursor: pointer;
     transition: all 0.2s ease;
-    position: relative;
+    margin-bottom: 0.25rem;
 
     &:hover {
       background: $gray-100;
@@ -425,57 +310,45 @@ await setGenres();
     }
 
     &.all-genre {
-      border: 1px solid $border;
-      margin-bottom: 1rem;
-      font-weight: 500;
-
-      .genre-icon {
-        background: $primary-light;
-
-        i {
-          color: $primary;
-        }
-      }
+      font-weight: 600;
+      border-bottom: 1px solid $border-light;
+      margin-bottom: 0.75rem;
+      padding-bottom: 1rem;
 
       .genre-count {
+        margin-left: auto;
+        background: $gray-200;
+        color: $text-muted;
+        font-size: 0.7rem;
+        padding: 0.25rem 0.5rem;
+        border-radius: 12px;
+        min-width: 1.5rem;
+        text-align: center;
+      }
+
+      &.selected .genre-count {
         background: $primary;
         color: $white;
-        font-size: 0.7rem;
-        padding: 0.125rem 0.375rem;
-        border-radius: 12px;
-        font-weight: 600;
-        margin-left: auto;
       }
     }
 
     .genre-icon {
-      width: 32px;
-      height: 32px;
-      margin-right: 0.75rem;
+      width: 1.5rem;
+      height: 1.5rem;
       display: flex;
       align-items: center;
       justify-content: center;
-      border-radius: 6px;
-      background: $gray-100;
+      color: $text-muted;
       flex-shrink: 0;
 
-      img {
-        width: 100%;
-        height: 100%;
-        object-fit: cover;
-        border-radius: 6px;
-      }
-
       i {
-        font-size: 0.9rem;
-        color: $text-muted;
+        font-size: 1rem;
       }
     }
 
     .genre-name {
-      font-size: 0.9rem;
+      font-size: 0.85rem;
       font-weight: 500;
-      color: $text;
       flex: 1;
       overflow: hidden;
       text-overflow: ellipsis;
@@ -485,144 +358,84 @@ await setGenres();
 }
 
 .ad-space {
-  border-top: 1px solid $border;
+  margin-top: 2rem;
   padding-top: 1rem;
-  margin-top: auto;
+  border-top: 1px solid $border-light;
 
   .ad-container {
+    background: $gray-50;
+    border: 2px dashed $border;
+    border-radius: 8px;
+    padding: 1.5rem;
+    text-align: center;
+
     .ad-placeholder {
-      background: linear-gradient(135deg, $gray-50 0%, $gray-100 100%);
-      border: 2px dashed $border;
-      border-radius: 8px;
-      padding: 1.5rem 1rem;
-      text-align: center;
       color: $text-muted;
-      min-height: 200px;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      gap: 0.5rem;
 
       i {
         font-size: 2rem;
-        margin-bottom: 0.5rem;
-        opacity: 0.6;
+        margin-bottom: 0.75rem;
+        display: block;
       }
 
       p {
+        margin: 0 0 0.25rem 0;
+        font-weight: 600;
         font-size: 0.9rem;
-        font-weight: 500;
-        margin: 0;
       }
 
       small {
         font-size: 0.75rem;
-        opacity: 0.8;
-      }
-    }
-
-    /* 実際の広告が表示される場合のスタイル */
-    .ad-content {
-      border-radius: 8px;
-      overflow: hidden;
-
-      img {
-        width: 100%;
-        height: auto;
-        display: block;
-      }
-
-      /* Google AdSense等のiframe対応 */
-      iframe {
-        width: 100%;
-        max-width: 100%;
-        border: none;
-        border-radius: 8px;
-      }
-
-      /* テキスト広告の場合 */
-      .text-ad {
-        background: $white;
-        border: 1px solid $border;
-        border-radius: 8px;
-        padding: 1rem;
-
-        .ad-title {
-          font-size: 0.9rem;
-          font-weight: 600;
-          color: $text;
-          margin-bottom: 0.5rem;
-        }
-
-        .ad-description {
-          font-size: 0.8rem;
-          color: $text-muted;
-          line-height: 1.4;
-        }
-
-        .ad-link {
-          color: $primary;
-          text-decoration: none;
-          font-size: 0.8rem;
-
-          &:hover {
-            text-decoration: underline;
-          }
-        }
       }
     }
   }
 }
 
-@keyframes slideDown {
-  from {
-    opacity: 0;
-    transform: translateY(-10px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
+// スライドトランジション
+.slide-enter-active,
+.slide-leave-active {
+  transition: all 0.3s ease;
+  max-height: 200px;
+  overflow: hidden;
+}
+
+.slide-enter-from,
+.slide-leave-to {
+  max-height: 0;
+  opacity: 0;
+  padding-top: 0;
+  padding-bottom: 0;
+}
+
+// レスポンシブ対応
+@media (max-width: 1024px) {
+  .side-menu {
+    width: 240px;
+    padding: 0.75rem;
+
+    .genre-list .genre-item {
+      padding: 0.625rem 0.75rem;
+
+      .genre-name {
+        font-size: 0.8rem;
+      }
+    }
   }
 }
 
-@keyframes spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
-}
-
-// Responsive
 @media (max-width: 768px) {
   .side-menu {
-    width: 100%;
-    height: auto;
-    position: static;
-    border-right: none;
-    border-bottom: 1px solid $border;
+    position: fixed;
+    left: -280px;
+    top: 0;
+    width: 280px;
+    height: 100vh;
+    z-index: 1000;
+    box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+    transition: left 0.3s ease;
 
-    .ad-space {
-      margin-top: 1rem;
-
-      .ad-container .ad-placeholder {
-        min-height: 150px;
-        padding: 1rem 0.75rem;
-
-        i {
-          font-size: 1.5rem;
-        }
-
-        p {
-          font-size: 0.85rem;
-        }
-
-        small {
-          font-size: 0.7rem;
-        }
-      }
+    &.open {
+      left: 0;
     }
   }
 }
