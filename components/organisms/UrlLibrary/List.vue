@@ -48,14 +48,25 @@ const emits = defineEmits<{
 
     <!-- URLリスト -->
     <div v-else-if="data.length > 0" class="url-list">
-      <OrganismsUrlLibraryRow
-        v-for="item in props.data"
-        :key="item.id"
-        :data="item"
-        @click-note="emits('click-note', item.id)"
-        @click-edit="emits('click-edit', item.id)"
-        @click-delete="emits('click-delete', item.id)"
-      />
+      <template v-for="(item, index) in props.data" :key="item.id">
+        <OrganismsUrlLibraryRow
+          :data="item"
+          @click-note="emits('click-note', item.id)"
+          @click-edit="emits('click-edit', item.id)"
+          @click-delete="emits('click-delete', item.id)"
+        />
+
+        <!-- 5個おきに広告を表示 -->
+        <div v-if="(index + 1) % 5 === 0" class="ad-break">
+          <AtomsAdSense
+            ad-slot="YOUR_CONTENT_AD_SLOT_ID"
+            ad-format="fluid"
+            ad-layout="in-article"
+            style="display: block; text-align: center"
+            class="content-ad"
+          />
+        </div>
+      </template>
     </div>
 
     <!-- 空状態 -->
@@ -83,6 +94,19 @@ const emits = defineEmits<{
     display: flex;
     flex-direction: column;
     gap: 0;
+
+    .ad-break {
+      margin: 2rem 0;
+      padding: 1rem;
+      background: $gray-50;
+      border-radius: 8px;
+      border: 1px solid $border-light;
+
+      .content-ad {
+        max-width: 100%;
+        margin: 0 auto;
+      }
+    }
   }
 
   // ローディング状態

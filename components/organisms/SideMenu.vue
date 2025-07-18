@@ -184,17 +184,13 @@ setGenres();
       </ul>
     </div>
 
-    <!-- 広告スペース -->
+    <!-- AdSense広告スペース -->
     <div class="ad-space">
-      <div class="ad-container">
-        <div class="ad-placeholder">
-          <i class="fas fa-bullhorn"></i>
-          <p>広告スペース</p>
-          <small>ここに広告が表示されます</small>
-        </div>
-        <!-- 実際の広告コードはここに配置 -->
-        <!-- 例: Google AdSense, Amazon アソシエイト など -->
-      </div>
+      <AtomsAdSense
+        ad-slot="YOUR_AD_SLOT_ID"
+        style="display: block; width: 280px; height: 280px"
+        class="sidebar-ad"
+      />
     </div>
   </div>
 </template>
