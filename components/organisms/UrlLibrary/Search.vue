@@ -15,16 +15,7 @@ const { hashTags } = useMaster();
 
 <template>
   <form :class="['search', props.class]" @submit.prevent>
-    <!-- キーワード検索 -->
-    <div class="search-field">
-      <AtomsInput
-        :value="props.form.data.keyword"
-        placeholder="タイトルで検索..."
-        @change="props.form.update('keyword', $event)"
-      />
-    </div>
-
-    <!-- ハッシュタグ検索 -->
+    <!-- ハッシュタグ検索のみ -->
     <AtomsPulldown
       class="hashtag-filter"
       :options="hashTags"
@@ -42,11 +33,6 @@ const { hashTags } = useMaster();
   align-items: center;
   margin-top: 20px;
 
-  .search-field {
-    flex: 1;
-    max-width: 300px;
-  }
-
   .hashtag-filter {
     width: 200px;
   }
@@ -55,14 +41,6 @@ const { hashTags } = useMaster();
 // レスポンシブ対応
 @media (max-width: 768px) {
   .search {
-    flex-direction: column;
-    gap: 0.75rem;
-    align-items: stretch;
-
-    .search-field {
-      max-width: none;
-    }
-
     .hashtag-filter {
       width: 100%;
     }

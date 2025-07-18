@@ -12,6 +12,7 @@ const urlLibraries = ref<UrlLibrary[]>([]);
 const showNoteId = ref<number | null>(null);
 const showEditPopupId = ref<number | null>(null);
 const showDeletePopupId = ref<number | null>(null);
+const showRegisterPopup = ref(false);
 const { addToast } = useToast();
 
 const setUrlLibraries = async () => {
@@ -67,12 +68,21 @@ await setUrlLibraries();
         @click-note="showNoteId = $event"
         @click-edit="showEditPopupId = $event"
         @click-delete="showDeletePopupId = $event"
+        @add-url="showRegisterPopup = true"
       />
     </div>
     <div v-if="showNoteId" class="right-block">
       <OrganismsUrlLibraryNote :id="showNoteId" @close="showNoteId = null" />
     </div>
   </div>
+
+  <OrganismsUrlLibraryPopupRegister
+    v-if="showRegisterPopup"
+    @close="
+      showRegisterPopup = false;
+      setUrlLibraries();
+    "
+  />
 
   <OrganismsUrlLibraryPopupEdit
     v-if="showEditPopupId"

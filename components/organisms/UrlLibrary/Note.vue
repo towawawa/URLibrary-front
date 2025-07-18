@@ -1,10 +1,13 @@
 <script lang="ts" setup>
+import { parseMarkdown } from '@/utils/markdown';
+
 type Props = {
   class?: string;
   id: number;
 };
 
 const isFetching = ref(true);
+const isEditMode = ref(false); // プレビューモード（false）、編集モード（true）
 
 const props = withDefaults(defineProps<Props>(), {
   class: '',
@@ -33,15 +36,26 @@ const updateNote = async (event: Event) => {
   });
 };
 
+// マークダウンをHTMLに変換
+const parsedMarkdown = computed(() => {
+  return parseMarkdown(form.data.note);
+});
+
+// プレビュー/編集モードの切り替え
+const toggleMode = () => {
+  isEditMode.value = !isEditMode.value;
+};
+
 const emits = defineEmits<{
   (event: 'close'): void;
 }>();
 
-// idが変わったらノートを取得
+// idが変わったらノートを取得し、プレビューモードにリセット
 watch(
   () => props.id,
   () => {
     setNote();
+    isEditMode.value = false; // 新しいメモを開く時はプレビューモード
   },
   { immediate: true },
 );
@@ -73,12 +87,55 @@ watch(
 
     <!-- ノート表示 -->
     <div v-else class="note">
-      <button class="close-btn" @click="emits('close')">
-        <i class="fas fa-times"></i>
-      </button>
+      <div class="note-header">
+        <button
+          class="mode-toggle-btn"
+          @click="toggleMode"
+          :title="
+            isEditMode ? 'プレビューモードに切り替え' : '編集モードに切り替え'
+          "
+        >
+          <i :class="isEditMode ? 'fas fa-eye' : 'fas fa-edit'"></i>
+          {{ isEditMode ? 'プレビュー' : '編集' }}
+        </button>
+        <button class="close-btn" @click="emits('close')">
+          <i class="fas fa-times"></i>
+        </button>
+      </div>
+
+      <!-- プレビューモード -->
+      <div
+        v-if="!isEditMode"
+        class="note-preview"
+        v-html="parsedMarkdown"
+      ></div>
+
+      <!-- 編集モード -->
       <textarea
+        v-else
         class="note-textarea"
-        placeholder="ここにメモを入力してください..."
+        placeholder="ここにメモを入力してください...
+
+# マークダウン記法が使えます
+- リスト
+- **太字**
+- *斜体*
+- [リンク](URL)
+
+## コードスニペット
+インラインコード: `console.log('Hello');`
+
+コードブロック:
+```javascript
+function greet(name) {
+  console.log(`Hello, ${name}!`);
+}
+```
+
+```python
+def greet(name):
+    print(f'Hello, {name}!')
+```"
         @change="updateNote($event)"
         >{{ form.data.note }}</textarea
       >
@@ -100,6 +157,56 @@ watch(
   border: 1px solid $border;
   border-radius: 8px;
   overflow: hidden;
+
+  .note-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem;
+    border-bottom: 1px solid $border-light;
+    background: $gray-50;
+  }
+
+  .mode-toggle-btn {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 1rem;
+    background: $primary-light;
+    color: $primary;
+    border: 1px solid $primary-light;
+    border-radius: 6px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+
+    i {
+      font-size: 0.8rem;
+    }
+  }
+
+  .close-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 2rem;
+    height: 2rem;
+    background: $gray-200;
+    border: none;
+    border-radius: 50%;
+    cursor: pointer;
+    transition: all 0.2s ease;
+
+    &:hover {
+      background: $error-light;
+      color: $error;
+    }
+
+    i {
+      font-size: 0.8rem;
+    }
+  }
 
   .loading-header {
     display: flex;
@@ -164,15 +271,15 @@ watch(
         margin-bottom: 0.75rem;
 
         &.long {
-          width: 90%;
+          width: 80%;
         }
 
         &.medium {
-          width: 70%;
+          width: 60%;
         }
 
         &.short {
-          width: 50%;
+          width: 40%;
         }
       }
     }
@@ -182,23 +289,46 @@ watch(
 .note {
   width: 100%;
   height: 100%;
-  position: relative;
   background: $white;
   border: 1px solid $border;
   border-radius: 8px;
   overflow: hidden;
 
+  .note-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem;
+    border-bottom: 1px solid $border-light;
+    background: $gray-50;
+  }
+
+  .mode-toggle-btn {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 1rem;
+    background: $primary-light;
+    color: $primary;
+    border: 1px solid $primary-light;
+    border-radius: 6px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+
+    i {
+      font-size: 0.8rem;
+    }
+  }
+
   .close-btn {
-    position: absolute;
-    top: 1rem;
-    right: 1rem;
-    z-index: 10;
     display: flex;
     align-items: center;
     justify-content: center;
     width: 2rem;
     height: 2rem;
-    background: $gray-100;
+    background: $gray-200;
     border: none;
     border-radius: 50%;
     cursor: pointer;
@@ -214,29 +344,249 @@ watch(
     }
   }
 
-  .note-textarea {
+  .note-preview {
     width: 100%;
     height: 100%;
-    resize: none;
-    border: none;
-    background: $white;
-    padding: 3.5rem 1rem 1rem 1rem;
-    font-size: 0.9rem;
+    padding: 1rem;
+    overflow-y: auto;
+    font-size: 1rem;
     line-height: 1.6;
     color: $text;
-    outline: none;
+    background: $white;
+    border-radius: 0 0 8px 8px;
+    border: 1px solid $border;
+    border-top: none;
 
-    &::placeholder {
-      color: $text-muted;
+    p {
+      margin-bottom: 0.5rem;
+    }
+
+    strong {
+      font-weight: 600;
+    }
+
+    em {
       font-style: italic;
     }
 
+    code {
+      background-color: $gray-100;
+      padding: 0.2rem 0.4rem;
+      border-radius: 4px;
+      font-size: 0.9rem;
+      font-family:
+        'SFMono-Regular', 'Monaco', 'Consolas', 'Liberation Mono', 'Menlo',
+        monospace;
+      color: #d73a49; // コード専用の色
+    }
+
+    pre {
+      background-color: #f6f8fa;
+      border: 1px solid #e1e4e8;
+      border-radius: 8px;
+      padding: 1rem;
+      margin: 1rem 0;
+      overflow-x: auto;
+      line-height: 1.4;
+
+      code {
+        background: none;
+        padding: 0;
+        color: inherit; // preの中では継承色を使用
+        font-size: 0.85rem;
+      }
+    }
+
+    // シンタックスハイライト用の追加スタイル
+    .hljs {
+      background: #f6f8fa !important;
+      color: #24292e;
+    }
+
+    // コードブロックのコピーボタン用スペース
+    pre:hover {
+      background-color: #f1f3f5;
+    }
+
+    a {
+      color: $primary;
+      text-decoration: none;
+
+      &:hover {
+        text-decoration: underline;
+      }
+    }
+
+    h1,
+    h2,
+    h3,
+    h4,
+    h5,
+    h6 {
+      margin: 1rem 0 0.5rem 0;
+      font-weight: 600;
+    }
+
+    h1 {
+      font-size: 1.4rem;
+    }
+    h2 {
+      font-size: 1.3rem;
+    }
+    h3 {
+      font-size: 1.2rem;
+    }
+    h4 {
+      font-size: 1.1rem;
+    }
+    h5 {
+      font-size: 1rem;
+    }
+    h6 {
+      font-size: 1rem;
+    }
+
+    blockquote {
+      border-left: 4px solid $primary-light;
+      padding-left: 1rem;
+      margin: 1rem 0;
+      color: $text-muted;
+      font-style: italic;
+    }
+  }
+
+  .note-textarea {
+    width: 100%;
+    height: 100%;
+    padding: 1rem;
+    border: none;
+    background: transparent;
+    resize: none;
+    outline: none;
+    font-size: 0.9rem;
+    line-height: 1.6;
+    color: $text;
+    font-family: inherit;
+
+    &::placeholder {
+      color: $text-muted;
+    }
+
     &:focus {
-      background: $gray-50;
+      border: none;
+      box-shadow: none;
     }
   }
 }
 
+// v-htmlでレンダリングされたコンテンツに対するスタイル
+.note-preview :deep(ul) {
+  margin: 0.5rem 0 !important;
+  padding-left: 2rem !important;
+  list-style: disc !important;
+}
+
+.note-preview :deep(ul ul) {
+  margin: 0.25rem 0 !important;
+  padding-left: 1.5rem !important;
+  list-style: circle !important;
+}
+
+.note-preview :deep(ul ul ul) {
+  list-style: square !important;
+}
+
+.note-preview :deep(ol) {
+  margin: 0.5rem 0 !important;
+  padding-left: 2rem !important;
+  list-style: decimal !important;
+}
+
+.note-preview :deep(ol ol) {
+  margin: 0.25rem 0 !important;
+  padding-left: 1.5rem !important;
+  list-style: lower-alpha !important;
+}
+
+.note-preview :deep(ol ol ol) {
+  list-style: lower-roman !important;
+}
+
+.note-preview :deep(li) {
+  margin-bottom: 0.25rem !important;
+  display: list-item !important;
+  padding-left: 0.5rem;
+}
+
+.note-preview :deep(li > p) {
+  margin: 0;
+  display: inline;
+}
+
+// コードブロックのスタイル
+.note-preview :deep(pre) {
+  position: relative;
+  background-color: #f6f8fa !important;
+  border: 1px solid #e1e4e8 !important;
+  border-radius: 8px !important;
+  padding: 1rem !important;
+  margin: 1rem 0 !important;
+  overflow-x: auto !important;
+  line-height: 1.4 !important;
+  font-family:
+    'SFMono-Regular', 'Monaco', 'Consolas', 'Liberation Mono', 'Menlo',
+    monospace !important;
+}
+
+.note-preview :deep(pre code) {
+  background: none !important;
+  padding: 0 !important;
+  border-radius: 0 !important;
+  font-size: 0.85rem !important;
+  color: inherit !important;
+}
+
+.note-preview :deep(code) {
+  background-color: rgba(175, 184, 193, 0.2) !important;
+  padding: 0.2rem 0.4rem !important;
+  border-radius: 3px !important;
+  font-size: 0.9rem !important;
+  font-family:
+    'SFMono-Regular', 'Monaco', 'Consolas', 'Liberation Mono', 'Menlo',
+    monospace !important;
+  color: #d73a49 !important;
+}
+
+// highlight.jsの特定のクラスをオーバーライド
+.note-preview :deep(.hljs) {
+  background: #f6f8fa !important;
+  color: #24292e !important;
+  font-size: 0.85rem !important;
+}
+
+.note-preview :deep(.hljs-keyword) {
+  color: #d73a49 !important;
+  font-weight: 600;
+}
+
+.note-preview :deep(.hljs-string) {
+  color: #032f62 !important;
+}
+
+.note-preview :deep(.hljs-comment) {
+  color: #6a737d !important;
+  font-style: italic;
+}
+
+.note-preview :deep(.hljs-function) {
+  color: #6f42c1 !important;
+}
+
+.note-preview :deep(.hljs-number) {
+  color: #005cc5 !important;
+}
+
+// スケルトンアニメーション
 @keyframes loading {
   0% {
     background-position: 200% 0;
@@ -249,9 +599,20 @@ watch(
 // レスポンシブ対応
 @media (max-width: 768px) {
   .note {
+    .note-header {
+      padding: 0.75rem;
+    }
+
+    .mode-toggle-btn {
+      padding: 0.4rem 0.8rem;
+      font-size: 0.75rem;
+
+      i {
+        font-size: 0.7rem;
+      }
+    }
+
     .close-btn {
-      top: 0.75rem;
-      right: 0.75rem;
       width: 1.75rem;
       height: 1.75rem;
 
@@ -261,8 +622,13 @@ watch(
     }
 
     .note-textarea {
-      padding: 3rem 0.75rem 0.75rem 0.75rem;
+      padding: 0.75rem;
       font-size: 0.85rem;
+    }
+
+    .note-preview {
+      padding: 0.75rem;
+      font-size: 0.9rem; /* 0.85rem から 0.9rem に変更 */
     }
   }
 

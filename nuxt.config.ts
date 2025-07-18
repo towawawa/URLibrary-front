@@ -35,7 +35,7 @@ export default defineNuxtConfig({
 
   css: ['@/assets/scss/style.scss'],
   modules: ['@nuxtjs/tailwindcss'],
-  plugins: ['@/plugins/vue-select.ts'],
+  plugins: ['@/plugins/vue-select.ts', '@/plugins/highlight.ts'],
 
   imports: {
     dirs: ['composables/**', 'store/**', 'components/**', 'types/**'],

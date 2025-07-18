@@ -22,6 +22,36 @@ const fetchOGP = async (url: string) => {
     isLoadingOgp.value = true;
     ogpError.value = false;
 
+    // URLの有効性をチェック
+    let parsedUrl;
+    try {
+      parsedUrl = new URL(url);
+    } catch {
+      ogpError.value = true;
+      return;
+    }
+
+    // ローカルホストやプライベートIPアドレスをスキップ
+    const hostname = parsedUrl.hostname.toLowerCase();
+    if (
+      hostname === 'localhost' ||
+      hostname === '127.0.0.1' ||
+      hostname.startsWith('192.168.') ||
+      hostname.startsWith('10.') ||
+      hostname.startsWith('172.') ||
+      hostname.endsWith('.local') ||
+      !hostname.includes('.')
+    ) {
+      ogpError.value = true;
+      return;
+    }
+
+    // HTTPSでない場合もスキップ（CORSプロキシの制限）
+    if (parsedUrl.protocol !== 'https:') {
+      ogpError.value = true;
+      return;
+    }
+
     //urlの末尾に/をつける
     if (!url.endsWith('/')) {
       url += '/';
@@ -29,6 +59,11 @@ const fetchOGP = async (url: string) => {
 
     const proxyUrl = `https://corsproxy.io/?${encodeURIComponent(url)}`;
     const response = await fetch(proxyUrl);
+
+    if (!response.ok) {
+      throw new Error(`HTTP ${response.status}`);
+    }
+
     const html = await response.text();
     const domParser = new DOMParser();
     const dom = domParser.parseFromString(html, 'text/html');

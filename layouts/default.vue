@@ -31,10 +31,17 @@ await initAuth();
 
   <!-- メインコンテンツ -->
   <div class="app-layout" :class="{ 'app-layout--login': isPublicPage }">
-    <!-- デスクトップサイドメニュー -->
+    <!-- デスクトップサイドメニュー（左側固定） -->
     <aside v-if="!isPublicPage" class="sidebar desktop-sidebar">
       <OrganismsSideMenu />
     </aside>
+
+    <!-- メインコンテンツエリア -->
+    <main class="main-content">
+      <div class="content-wrapper">
+        <slot />
+      </div>
+    </main>
 
     <!-- モバイルサイドメニューオーバーレイ -->
     <Transition name="overlay">
@@ -48,13 +55,6 @@ await initAuth();
         </aside>
       </div>
     </Transition>
-
-    <!-- メインコンテンツエリア -->
-    <main class="main-content">
-      <div class="content-wrapper">
-        <slot />
-      </div>
-    </main>
   </div>
 
   <!-- トーストコンテナ -->
@@ -73,16 +73,15 @@ await initAuth();
   }
 
   .desktop-sidebar {
-    display: block;
-    flex-shrink: 0;
-    border-right: 1px solid $border;
-    border-bottom: 1px solid $border;
+    position: fixed;
+    left: 0;
+    top: 135px; /* ヘッダーの高さ分下げる */
+    width: 280px;
+    height: calc(100vh - 60px); /* ヘッダー分を差し引く */
+    z-index: 50; /* ヘッダーより低く設定 */
     background: $white;
-    position: sticky;
-    top: 0;
-    height: 80vh;
+    border-right: 1px solid $border;
     overflow-y: auto;
-    z-index: 100;
   }
 
   .sidebar-overlay {
@@ -111,7 +110,8 @@ await initAuth();
     flex: 1;
     display: flex;
     flex-direction: column;
-    min-width: 0; // Flexboxの幅計算を修正
+    min-width: 0;
+    margin-left: 280px; /* サイドバーの幅分マージンを追加 */
 
     .content-wrapper {
       flex: 1;
@@ -157,12 +157,16 @@ await initAuth();
       display: none;
     }
 
-    .sidebar-overlay {
-      display: block;
+    .main-content {
+      margin-left: 0; /* モバイル時はマージンなし */
+
+      .content-wrapper {
+        padding: 1rem;
+      }
     }
 
-    .main-content .content-wrapper {
-      padding: 1rem;
+    .sidebar-overlay {
+      display: block;
     }
   }
 }
