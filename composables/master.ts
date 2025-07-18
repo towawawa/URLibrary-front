@@ -1,4 +1,4 @@
-type Master = {
+export type Master = {
   id: number;
   name: string;
 };
@@ -9,7 +9,6 @@ export const useMaster = () => {
 
   const getMasters = async (): Promise<void> => {
     await fetcher('GET', '/masters').then((res) => {
-      console.log(res);
       hashTags.value = res.data.hashTags as Master[];
       genres.value = res.data.genres as Master[];
     });

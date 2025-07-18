@@ -49,7 +49,9 @@ get();
   <MoleculesPopupFrame @close="emits('close')">
     <div class="edit-container">
       <OrganismsUrlLibraryPopupForm :form="form" />
-      <AtomsBtn class="mx-auto mt-5" @click="edit()">更新</AtomsBtn>
+      <AtomsBtn class="mx-auto mt-5" size="lg" fullWidth @click="edit()"
+        >更新</AtomsBtn
+      >
     </div>
   </MoleculesPopupFrame>
 </template>

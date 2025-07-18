@@ -1,5 +1,9 @@
 <script lang="ts" setup>
 import Index from '@/components/organisms/Calendar/Index.vue';
+
+definePageMeta({
+  middleware: 'auth',
+});
 </script>
 
 <template>

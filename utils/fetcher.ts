@@ -30,7 +30,6 @@ export const fetcher = (
     onResponse() {},
     onRequestError() {},
     onResponseError({ response }) {
-      console.log(response);
       switch (response.status) {
         case 401: {
           // 認証エラーの場合はログインページへリダイレクト

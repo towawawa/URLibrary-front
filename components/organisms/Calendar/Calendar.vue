@@ -26,68 +26,206 @@ watch(
     immediate: true,
   },
 );
+
+// 曜日の定義
+const weekdays = [
+  { jp: '日', en: 'SUN', class: 'sunday' },
+  { jp: '月', en: 'MON', class: 'monday' },
+  { jp: '火', en: 'TUE', class: 'tuesday' },
+  { jp: '水', en: 'WED', class: 'wednesday' },
+  { jp: '木', en: 'THU', class: 'thursday' },
+  { jp: '金', en: 'FRI', class: 'friday' },
+  { jp: '土', en: 'SAT', class: 'saturday' },
+];
 </script>
 
 <template>
-  <table class="calendar">
-    <thead>
-      <tr class="weekday">
-        <th class="sunday">日 <span>SUN</span></th>
-        <th>月 <span>MON</span></th>
-        <th>火 <span>TUE</span></th>
-        <th>水 <span>WED</span></th>
-        <th>木 <span>THU</span></th>
-        <th>金 <span>FRI</span></th>
-        <th class="saturday">土<span>SAT</span></th>
-      </tr>
-    </thead>
+  <div class="calendar-container">
+    <div class="calendar">
+      <!-- 曜日ヘッダー -->
+      <div class="calendar-header">
+        <div
+          v-for="(day, index) in weekdays"
+          :key="index"
+          class="weekday-header"
+          :class="day.class"
+        >
+          <span class="weekday-jp">{{ day.jp }}</span>
+          <span class="weekday-en">{{ day.en }}</span>
+        </div>
+      </div>
 
-    <tbody>
-      <OrganismsCalendarRecord
-        v-for="(week, index) in weeks"
-        :key="index"
-        :dates="week"
-        :data="weeklyData[index] ? weeklyData[index] : []"
-        :record-index="index"
-      />
-    </tbody>
-  </table>
+      <!-- カレンダー本体 -->
+      <div class="calendar-body">
+        <template v-for="(week, weekIndex) in weeks" :key="weekIndex">
+          <OrganismsCalendarCell
+            v-for="(date, dayIndex) in week"
+            :key="`${weekIndex}-${dayIndex}`"
+            :date="date"
+            :data="
+              weeklyData[weekIndex] && weeklyData[weekIndex][dayIndex]
+                ? weeklyData[weekIndex][dayIndex]
+                : []
+            "
+            :day-index="dayIndex"
+          />
+        </template>
+      </div>
+    </div>
+  </div>
 </template>
 
 <style lang="scss" scoped>
+.calendar-container {
+  padding: 1rem;
+  max-width: 100%;
+  overflow-x: auto;
+}
+
 .calendar {
-  margin: 0 30px 30px 30px;
-  background-color: $white;
-  border-radius: 3px;
-  display: inline-block;
-  thead {
-    .weekday {
-      display: flex;
-      th {
-        padding: 8px 0;
-        width: 200px;
-        background-color: $light-blue;
-        color: $dark-blue;
-        font-size: 1rem;
-        border-right: 1px solid $calendar-border;
+  background: $white;
+  border-radius: 6px;
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+  min-width: 800px;
+  border: 1px solid $border;
 
-        &:last-child {
-          border-right: none;
+  .calendar-header {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    background: $gray-50;
+    border-bottom: 1px solid $border;
+
+    .weekday-header {
+      padding: 0.5rem 0.375rem;
+      text-align: center;
+      font-weight: 600;
+      font-size: 0.8rem;
+      color: $text;
+      border-right: 1px solid $border;
+
+      &:last-child {
+        border-right: none;
+      }
+
+      .weekday-jp {
+        display: block;
+        font-size: 0.85rem;
+        margin-bottom: 0.125rem;
+      }
+
+      .weekday-en {
+        display: block;
+        font-size: 0.6rem;
+        color: $text-muted;
+        font-weight: 500;
+      }
+
+      &.sunday {
+        background: rgba(239, 68, 68, 0.05);
+        .weekday-jp {
+          color: $error;
         }
+      }
 
-        span {
-          margin-left: 3px;
-          font-size: 0.8rem;
-        }
-
-        &.sunday {
-          color: $red;
-        }
-
-        &.saturday {
+      &.saturday {
+        background: rgba(59, 130, 246, 0.05);
+        .weekday-jp {
           color: $blue;
         }
       }
+    }
+  }
+
+  .calendar-body {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+
+    :deep(.calendar-cell) {
+      min-height: 100px;
+      border-right: 1px solid $border;
+      border-bottom: 1px solid $border;
+
+      &:nth-child(7n) {
+        border-right: none;
+      }
+
+      &:nth-last-child(-n + 7) {
+        border-bottom: none;
+      }
+    }
+  }
+}
+
+// レスポンシブ対応
+@media (max-width: 1024px) {
+  .calendar-container {
+    padding: 0.75rem;
+  }
+
+  .calendar {
+    min-width: 700px;
+
+    .calendar-header .weekday-header {
+      padding: 0.375rem 0.25rem;
+
+      .weekday-jp {
+        font-size: 0.8rem;
+      }
+
+      .weekday-en {
+        font-size: 0.55rem;
+      }
+    }
+
+    .calendar-body :deep(.calendar-cell) {
+      min-height: 80px;
+    }
+  }
+}
+
+@media (max-width: 768px) {
+  .calendar-container {
+    padding: 0.5rem;
+    margin: 0 -0.5rem;
+  }
+
+  .calendar {
+    min-width: 600px;
+    border-radius: 4px;
+
+    .calendar-header .weekday-header {
+      padding: 0.25rem 0.125rem;
+
+      .weekday-jp {
+        font-size: 0.75rem;
+      }
+
+      .weekday-en {
+        display: none;
+      }
+    }
+
+    .calendar-body :deep(.calendar-cell) {
+      min-height: 70px;
+    }
+  }
+}
+
+@media (max-width: 480px) {
+  .calendar {
+    min-width: 500px;
+
+    .calendar-header .weekday-header {
+      padding: 0.25rem 0.0625rem;
+
+      .weekday-jp {
+        font-size: 0.7rem;
+      }
+    }
+
+    .calendar-body :deep(.calendar-cell) {
+      min-height: 60px;
     }
   }
 }

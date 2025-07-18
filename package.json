@@ -21,7 +21,6 @@
     "@nuxtjs/eslint-config-typescript": "^12.1.0",
     "@nuxtjs/eslint-module": "^4.1.0",
     "@nuxtjs/tailwindcss": "^6.12.2",
-    "@rollup/rollup-linux-x64-gnu": "4.6.1",
     "@typescript-eslint/eslint-plugin": "^8.11.0",
     "@typescript-eslint/parser": "^8.11.0",
     "@vue/eslint-config-prettier": "^10.1.0",

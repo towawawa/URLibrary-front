@@ -1,19 +1,51 @@
-$error: #f52929;
-$error-background: #ff7575;
-$border: #ababab;
-$white: #ffffff;
-$background: #f3f3f3;
+// Primary colors
 $primary: #74a043;
-$light-primary: #d3e3c4;
 $primary-hover: #5e7f35;
-$dark-primary: #2b3b1c;
-$gray: #838383;
-$gray-hover: #6d6d6d;
-$url-text: #2976ff;
+$primary-light: #d3e3c4;
+$primary-dark: #2b3b1c;
+
+// Text colors
+$text: #2c2c2c;
+$text-light: #6b7280;
+$text-muted: #9ca3af;
+
+// Background colors
+$background: #fafafa;
+$white: #ffffff;
+$gray-50: #f9fafb;
+$gray-100: #f3f4f6;
+$gray-200: #e5e7eb;
+$gray-300: #d1d5db;
+
+// Border colors
+$border: #e5e7eb;
+$border-light: #f3f4f6;
+
+// Status colors
+$error: #ef4444;
+$error-light: #fef2f2;
+$success: #10b981;
+$success-light: #f0fdf4;
+$warning: #f59e0b;
+$warning-light: #fffbeb;
+
+// UI colors
+$blue: #3b82f6;
+$blue-light: #eff6ff;
+$url-text: #2563eb;
+$calendar-border: $blue;
+
+// Interactive states
+$hover: #f3f4f6;
+$focus: rgba(59, 130, 246, 0.1);
+
+// Legacy colors (for backward compatibility)
+$error-background: $error-light;
+$light-primary: $primary-light;
+$dark-primary: $primary-dark;
+$gray: $text-light;
+$gray-hover: $text;
 $black: #000000;
-$light-blue: #e9f1fb;
-$dark-blue: #003b65;
-$red: #d02525;
-$blue: #2589d0;
-$calendar-border: #2589d0;
-$hover: #d3d3d3;
+$light-blue: $blue-light;
+$dark-blue: #1e40af;
+$red: $error;

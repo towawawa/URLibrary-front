@@ -1,15 +1,122 @@
 @use '_colors.scss' as *;
 
-h1,
-h2,
-h3,
-p,
-input,
-button,
-a {
-  font-family: Inter;
+// Reset and normalize
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  font-size: 14px; // ベースフォントサイズを小さく
+  line-height: 1.6;
 }
 
 body {
+  font-family:
+    -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Helvetica Neue',
+    Arial, sans-serif;
   background-color: $background;
+  color: $text;
+  font-size: 1rem;
+  overflow-x: hidden;
+}
+
+// Typography
+h1 {
+  font-size: 1.5rem;
+  font-weight: 600;
+  margin-bottom: 1rem;
+}
+
+h2 {
+  font-size: 1.25rem;
+  font-weight: 600;
+  margin-bottom: 0.75rem;
+}
+
+h3 {
+  font-size: 1.1rem;
+  font-weight: 500;
+  margin-bottom: 0.5rem;
+}
+
+p {
+  font-size: 0.9rem;
+  margin-bottom: 0.5rem;
+}
+
+// Links
+a {
+  color: $primary;
+  text-decoration: none;
+  transition: color 0.2s ease;
+
+  &:hover {
+    color: $primary-hover;
+  }
+}
+
+// Buttons
+button {
+  font-family: inherit;
+  cursor: pointer;
+  border: none;
+  border-radius: 6px;
+  transition: all 0.2s ease;
+  font-size: 0.9rem;
+
+  &:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+}
+
+// Inputs
+input,
+textarea,
+select {
+  font-family: inherit;
+  border: 1px solid $border;
+  border-radius: 6px;
+  padding: 0.5rem 0.75rem;
+  font-size: 0.9rem;
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease;
+
+  &:focus {
+    outline: none;
+    border-color: $primary;
+    box-shadow: 0 0 0 2px rgba(116, 160, 67, 0.1);
+  }
+}
+
+// Utility classes
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 1rem;
+}
+
+@media (max-width: 768px) {
+  html {
+    font-size: 13px;
+  }
+
+  .container {
+    padding: 0 0.75rem;
+  }
 }

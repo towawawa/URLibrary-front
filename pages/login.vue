@@ -1,4 +1,8 @@
 <script lang="ts" setup>
+definePageMeta({
+  middleware: 'guest',
+});
+
 useHead({ title: 'ログイン' });
 </script>
 
@@ -22,7 +26,7 @@ useHead({ title: 'ログイン' });
     text-align: center;
     font-size: 3rem;
     margin-bottom: 2rem;
-    margin-top: 10rem;
+    margin-top: 7rem;
     font-weight: bold;
   }
 }

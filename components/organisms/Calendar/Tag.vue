@@ -10,32 +10,46 @@ const props = withDefaults(defineProps<Props>(), {
 </script>
 
 <template>
-  <a class="tag" :key="props.data.id" :href="props.data.url" target="_blank">
-    <li>
-      {{ props.data.title }}
-    </li>
+  <a
+    class="calendar-tag"
+    :key="props.data.id"
+    :href="props.data.url"
+    target="_blank"
+  >
+    {{ props.data.title }}
   </a>
 </template>
 
 <style lang="scss" scoped>
-.tag {
-  display: inline-block;
-  padding: 4px 8px;
-  background-color: $light-primary;
-  border-left: 5px solid $primary;
-  color: $dark-primary;
-  font-size: 0.8rem;
+.calendar-tag {
+  display: block;
+  padding: 0.375rem 0.5rem;
+  background: $primary-light;
+  border-left: 3px solid $primary;
+  color: $primary-dark;
+  font-size: 0.75rem;
+  font-weight: 500;
   text-decoration: none;
   cursor: pointer;
   text-align: left;
-  height: 48px;
-  width: 180px;
+  margin-bottom: 0.25rem;
+  border-radius: 0 4px 4px 0;
+  transition: all 0.2s ease;
+
+  // テキストの省略表示
   overflow: hidden;
-  white-space: normal;
-  word-wrap: break-word;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  max-width: 100%;
 
   &:hover {
-    opacity: 0.8;
+    background: $primary;
+    color: $white;
+    transform: translateX(2px);
+  }
+
+  &:last-child {
+    margin-bottom: 0;
   }
 }
 </style>
