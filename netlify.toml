@@ -1,3 +1,9 @@
+[build]
+  # ビルドコマンド
+  command = "yarn build"
+  # ビルド成果物のディレクトリ（Nuxt 3用）
+  publish = "dist"
+
 # SPA用のリダイレクト設定（すべてのルートをindex.htmlに）
 [[redirects]]
   from = "/*"
