@@ -56,13 +56,17 @@ const emits = defineEmits<{
           @click-delete="emits('click-delete', item.id)"
         />
 
-        <!-- 5個おきに広告を表示 -->
-        <div v-if="(index + 1) % 5 === 0" class="ad-break">
+        <!-- 3個おきに小さな広告を表示 -->
+        <div v-if="(index + 1) % 3 === 0" class="ad-break">
           <AtomsAdSense
-            ad-slot="YOUR_CONTENT_AD_SLOT_ID"
-            ad-format="fluid"
-            ad-layout="in-article"
-            style="display: block; text-align: center"
+            ad-slot="1200848053"
+            ad-format="auto"
+            style="
+              display: block;
+              max-width: 320px;
+              height: 100px;
+              margin: 0 auto;
+            "
             class="content-ad"
           />
         </div>
@@ -96,14 +100,15 @@ const emits = defineEmits<{
     gap: 0;
 
     .ad-break {
-      margin: 2rem 0;
-      padding: 1rem;
+      margin: 1rem 0;
+      padding: 0.5rem;
       background: $gray-50;
-      border-radius: 8px;
+      border-radius: 6px;
       border: 1px solid $border-light;
+      text-align: center;
 
       .content-ad {
-        max-width: 100%;
+        max-width: 320px;
         margin: 0 auto;
       }
     }

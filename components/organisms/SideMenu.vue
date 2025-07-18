@@ -182,13 +182,24 @@ setGenres();
           <span class="genre-name">{{ genre.name }}</span>
         </li>
       </ul>
+
+      <!-- ジャンル下の小さな広告 -->
+      <div class="genre-ad">
+        <AtomsAdSense
+          ad-slot="3827011391"
+          ad-format="auto"
+          style="display: block; width: 250px; height: 120px; margin: 0 auto"
+          class="small-genre-ad"
+        />
+      </div>
     </div>
 
-    <!-- AdSense広告スペース -->
+    <!-- サイドバー下部の広告スペース -->
     <div class="ad-space">
       <AtomsAdSense
-        ad-slot="YOUR_AD_SLOT_ID"
-        style="display: block; width: 280px; height: 280px"
+        ad-slot="2163232479"
+        ad-format="auto"
+        style="display: block; width: 250px; height: 200px; margin: 0 auto"
         class="sidebar-ad"
       />
     </div>
@@ -353,37 +364,29 @@ setGenres();
   }
 }
 
+.genre-ad {
+  margin-top: 1rem;
+  padding: 0.75rem;
+  background: $gray-50;
+  border-radius: 6px;
+  border: 1px solid $border-light;
+  text-align: center;
+
+  .small-genre-ad {
+    max-width: 100%;
+  }
+}
+
 .ad-space {
-  margin-top: 2rem;
-  padding-top: 1rem;
-  border-top: 1px solid $border-light;
+  margin-top: 1.5rem;
+  padding: 0.75rem;
+  background: $gray-50;
+  border-radius: 6px;
+  border: 1px solid $border-light;
+  text-align: center;
 
-  .ad-container {
-    background: $gray-50;
-    border: 2px dashed $border;
-    border-radius: 8px;
-    padding: 1.5rem;
-    text-align: center;
-
-    .ad-placeholder {
-      color: $text-muted;
-
-      i {
-        font-size: 2rem;
-        margin-bottom: 0.75rem;
-        display: block;
-      }
-
-      p {
-        margin: 0 0 0.25rem 0;
-        font-weight: 600;
-        font-size: 0.9rem;
-      }
-
-      small {
-        font-size: 0.75rem;
-      }
-    }
+  .sidebar-ad {
+    max-width: 100%;
   }
 }
 
