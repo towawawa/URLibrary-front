@@ -13,16 +13,9 @@ const props = withDefaults(defineProps<Props>(), {
 const { hashTags, genres, getMasters } = useMaster();
 
 // 新しいハッシュタグが作成された時の処理
-const handleTagCreate = (tagName: string) => {
-  // バリデーション
-  if (!tagName || tagName.trim().length === 0) {
-    return;
-  }
-
-  const trimmedName = tagName.trim();
-
+const handleTagCreate = async (tagName: string) => {
   // 既に存在するかチェック
-  const existingTag = hashTags.value.find((tag) => tag.name === trimmedName);
+  const existingTag = hashTags.value.find((tag) => tag.name === tagName);
   if (existingTag) {
     // 既存のタグがあれば選択状態に追加
     if (!props.form.data.hashTagIds.includes(existingTag.id)) {
@@ -34,56 +27,19 @@ const handleTagCreate = (tagName: string) => {
     return;
   }
 
-  // 新しいタグ名として追加
-  if (!props.form.data.hashTagNames.includes(trimmedName)) {
-    props.form.update('hashTagNames', [
-      ...props.form.data.hashTagNames,
-      trimmedName,
-    ]);
+  // 新しいタグをAPIで登録
+  await fetcher('POST', '/hash-tags', { body: tagName });
+
+  // マスターデータを取得し直す
+  await getMasters();
+
+  // 新しく作成されたタグを見つけてフォームに追加
+  const newTag = hashTags.value.find((tag) => tag.name === tagName);
+
+  if (newTag) {
+    props.form.update('hashTagIds', [...props.form.data.hashTagIds, newTag.id]);
   }
 };
-
-// 表示用のハッシュタグオプション（既存 + 新規）
-const displayHashTagOptions = computed(() => {
-  const existing = hashTags.value;
-  const newTags = props.form.data.hashTagNames.map((name, index) => ({
-    id: `new-${index}`,
-    name: name,
-    isNew: true,
-  }));
-  return [...existing, ...newTags];
-});
-
-// 選択された値（既存ID + 新規タグ表示用ID）
-const selectedHashTagValues = computed({
-  get: () => {
-    const existingIds = props.form.data.hashTagIds;
-    const newTagIds = props.form.data.hashTagNames.map(
-      (_, index) => `new-${index}`,
-    );
-    return [...existingIds, ...newTagIds];
-  },
-  set: (values: (number | string)[]) => {
-    const existingIds: number[] = [];
-    const newTagNames: string[] = [];
-
-    if (Array.isArray(values)) {
-      values.forEach((value) => {
-        if (typeof value === 'string' && value.startsWith('new-')) {
-          const index = parseInt(value.replace('new-', ''));
-          if (props.form.data.hashTagNames[index]) {
-            newTagNames.push(props.form.data.hashTagNames[index]);
-          }
-        } else if (typeof value === 'number') {
-          existingIds.push(value);
-        }
-      });
-    }
-
-    props.form.update('hashTagIds', existingIds);
-    props.form.update('hashTagNames', newTagNames);
-  },
-});
 </script>
 
 <template>
@@ -112,15 +68,13 @@ const selectedHashTagValues = computed({
     </MoleculesInputField>
     <MoleculesInputField label="タグ">
       <AtomsMultiPulldown
-        :options="displayHashTagOptions"
-        :value="selectedHashTagValues"
-        :error-message="
-          props.form.firstError('hashTagIds') ||
-          props.form.firstError('hashTagNames')
-        "
-        :taggable="true"
+        :options="hashTags"
+        :value="props.form.data.hashTagIds"
+        :error-message="props.form.firstError('hashTagIds')"
+        label-prop="name"
+        value-prop="id"
         placeholder="タグを選択するか、新しいタグを入力してください"
-        @change="selectedHashTagValues = $event"
+        @change="props.form.update('hashTagIds', $event)"
         @tag:create="handleTagCreate"
       />
     </MoleculesInputField>

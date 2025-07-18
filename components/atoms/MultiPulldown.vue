@@ -11,7 +11,6 @@ type Props = {
   valueProp?: keyof Option;
   labelProp?: string;
   errorMessage?: string;
-  taggable?: boolean;
 };
 
 const props = withDefaults(defineProps<Props>(), {
@@ -20,7 +19,6 @@ const props = withDefaults(defineProps<Props>(), {
   labelProp: 'name',
   placeholder: '',
   errorMessage: '',
-  taggable: false,
 });
 
 const emits = defineEmits<{
@@ -55,9 +53,7 @@ const reduceFunction = (option: Option) => {
       :options="props.options"
       :label="props.labelProp"
       :reduce="reduceFunction"
-      :taggable="props.taggable"
       :push-tags="false"
-      :create-on-blur="props.taggable"
       :clearable="true"
       @update:model-value="onSelected"
       @option:created="onTagCreate"
@@ -65,24 +61,7 @@ const reduceFunction = (option: Option) => {
       <template #no-options>
         <p class="text-left px-2">選択肢が見つかりません。</p>
       </template>
-      <template v-if="props.taggable" #search="{ attributes, events }">
-        <input
-          class="vs__search"
-          v-bind="attributes"
-          v-on="events"
-          placeholder="タグ名を入力してEnterまたはTabキーを押してください"
-        />
-      </template>
-      <template #option="{ label }">
-        <span class="option-text">#{{ label }}</span>
-      </template>
-      <template #selected-option="{ label }">
-        <span class="selected-text">#{{ label }}</span>
-      </template>
     </v-select>
-    <div v-if="props.taggable" class="help-text">
-      新しいタグを追加するには、タグ名を入力してEnterキーまたはTabキーを押してください
-    </div>
     <p
       v-if="props.errorMessage"
       :class="{ 'c-error-message': props.errorMessage }"

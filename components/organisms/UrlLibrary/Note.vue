@@ -62,6 +62,9 @@ watch(
 </script>
 
 <template>
+  <!-- 背景オーバーレイ（スマホのみ） -->
+  <div class="note-overlay mobile-only" @click="emits('close')"></div>
+
   <div class="note-container">
     <!-- ローディング状態 -->
     <div v-if="isFetching" class="note-loading">
@@ -144,10 +147,21 @@ def greet(name):
 </template>
 
 <style lang="scss" scoped>
+// 背景オーバーレイ（スマホのみ）
+.note-overlay {
+  display: none;
+}
+
 .note-container {
-  width: 100%;
-  height: 100%;
-  position: relative;
+  position: fixed;
+  top: 135px; // ヘッダー高さと同じ
+  right: 1.5rem;
+  width: 500px;
+  height: calc(100vh - 135px - 3rem); // ヘッダー高さと下の余白を考慮
+  z-index: 1001;
+  background: $white;
+  border-radius: 8px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
 }
 
 .note-loading {
@@ -596,8 +610,38 @@ def greet(name):
   }
 }
 
-// レスポンシブ対応
+// スマホ用クラス
+.mobile-only {
+  display: none;
+}
+
+// レスポンシブ対応 - スマホではポップアップ表示
 @media (max-width: 768px) {
+  .mobile-only {
+    display: block;
+  }
+
+  .note-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 1000;
+  }
+
+  .note-container {
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    right: auto;
+    width: calc(100vw - 2rem);
+    max-width: 450px;
+    height: 70vh;
+    max-height: 600px;
+  }
+
   .note {
     .note-header {
       padding: 0.75rem;

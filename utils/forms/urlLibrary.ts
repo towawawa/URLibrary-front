@@ -5,7 +5,6 @@ export type Form = {
   url: string;
   genreId: number | null;
   hashTagIds: number[];
-  hashTagNames: string[];
   note: string;
 };
 
@@ -14,7 +13,6 @@ export const initialData: Form = {
   url: '',
   genreId: null,
   hashTagIds: [],
-  hashTagNames: [],
   note: '',
 };
 
@@ -23,7 +21,6 @@ export const validations: Record<string, Option[]> = {
   url: ['required', 'max:255'],
   genreId: [],
   hashTagIds: [],
-  hashTagNames: [],
   note: [],
 };
 
@@ -32,6 +29,5 @@ export const names = {
   url: 'URL',
   genreId: 'ジャンル',
   hashTagIds: 'ハッシュタグ',
-  hashTagNames: 'ハッシュタグ',
   note: 'メモ',
 };

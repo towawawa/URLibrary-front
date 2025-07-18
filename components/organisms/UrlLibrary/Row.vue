@@ -219,7 +219,7 @@ onMounted(() => {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 1rem 1.25rem;
+    padding: 0.5rem 1.25rem;
     border-bottom: 1px solid $border-light;
     background: $gray-50;
 
@@ -359,7 +359,7 @@ onMounted(() => {
 
     .ogp-container {
       width: 265px;
-      height: 135px;
+      height: 100px;
       border-radius: 8px;
       overflow: hidden;
       background: $gray-100;

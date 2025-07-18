@@ -10,6 +10,9 @@ import {
 const genres = ref<Genre[]>([]);
 const showAddGenreForm = ref(false);
 const isSubmitting = ref(false);
+const deletingGenreId = ref<number | null>(null);
+const showDeleteConfirm = ref(false);
+const genreToDelete = ref<{ id: number; name: string } | null>(null);
 
 // ジャンル追加フォーム
 const genreForm = useForm(
@@ -19,6 +22,39 @@ const genreForm = useForm(
   },
   names,
 );
+
+// ジャンル削除確認ポップアップを表示
+const confirmDeleteGenre = (genreId: number, genreName: string) => {
+  genreToDelete.value = { id: genreId, name: genreName };
+  showDeleteConfirm.value = true;
+};
+
+// ジャンル削除機能
+const deleteGenre = async () => {
+  if (!genreToDelete.value) return;
+
+  deletingGenreId.value = genreToDelete.value.id;
+  showDeleteConfirm.value = false;
+
+  try {
+    await fetcher('DELETE', `/genres/${genreToDelete.value.id}`);
+    await setGenres();
+
+    // 削除したジャンルが現在選択されている場合は「すべて」に戻す
+    if (Number(route.query.genreId) === genreToDelete.value.id) {
+      deleteQueryGenreId();
+    }
+  } catch (err: any) {
+    if (err.status === 400) {
+      alert('このジャンルを使用しているURLが存在するため削除できません。');
+    } else {
+      alert('ジャンルの削除に失敗しました。');
+    }
+  } finally {
+    deletingGenreId.value = null;
+    genreToDelete.value = null;
+  }
+};
 
 const setGenres = async () => {
   await fetcher('GET', '/genres')
@@ -158,12 +194,25 @@ const getDefaultIcon = (genreName: string) => {
           :key="genre.id"
           class="genre-item"
           :class="{ selected: Number(route.query.genreId) === genre.id }"
-          @click="pushQueryGenreId(genre.id)"
         >
-          <div class="genre-icon">
-            <i :class="getDefaultIcon(genre.name)"></i>
+          <div class="genre-content" @click="pushQueryGenreId(genre.id)">
+            <div class="genre-icon">
+              <i :class="getDefaultIcon(genre.name)"></i>
+            </div>
+            <span class="genre-name">{{ genre.name }}</span>
           </div>
-          <span class="genre-name">{{ genre.name }}</span>
+          <button
+            class="delete-btn"
+            :disabled="deletingGenreId === genre.id"
+            @click.stop="confirmDeleteGenre(genre.id, genre.name)"
+            :title="`${genre.name}を削除`"
+          >
+            <i
+              v-if="deletingGenreId === genre.id"
+              class="fas fa-spinner fa-spin"
+            ></i>
+            <i v-else class="fas fa-trash"></i>
+          </button>
         </li>
       </ul>
     </div>
@@ -178,6 +227,21 @@ const getDefaultIcon = (genreName: string) => {
       />
     </div>
   </div>
+
+  <!-- ジャンル削除確認ポップアップ -->
+  <OrganismsConfirmPopup
+    v-if="showDeleteConfirm && genreToDelete"
+    title="ジャンル削除"
+    :message="`「${genreToDelete.name}」を削除してもよろしいですか？\n\n※このジャンルを使用しているURLがある場合は削除できません。`"
+    confirmText="削除する"
+    cancelText="キャンセル"
+    variant="danger"
+    @close="
+      showDeleteConfirm = false;
+      genreToDelete = null;
+    "
+    @confirm="deleteGenre"
+  />
 </template>
 
 <style lang="scss" scoped>
@@ -202,7 +266,6 @@ const getDefaultIcon = (genreName: string) => {
     justify-content: center;
     gap: 0.5rem;
     padding: 0.75rem;
-    background: $primary-light;
     color: $primary;
     border: 1px solid $primary-light;
     border-radius: 6px;
@@ -255,9 +318,15 @@ const getDefaultIcon = (genreName: string) => {
     cursor: pointer;
     transition: all 0.2s ease;
     margin-bottom: 0.25rem;
+    position: relative;
 
     &:hover {
       background: $gray-100;
+
+      .delete-btn {
+        opacity: 1;
+        visibility: visible;
+      }
     }
 
     &.selected {
@@ -292,6 +361,14 @@ const getDefaultIcon = (genreName: string) => {
       }
     }
 
+    .genre-content {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      flex: 1;
+      cursor: pointer;
+    }
+
     .genre-icon {
       width: 1.5rem;
       height: 1.5rem;
@@ -309,10 +386,45 @@ const getDefaultIcon = (genreName: string) => {
     .genre-name {
       font-size: 0.85rem;
       font-weight: 500;
-      flex: 1;
       overflow: hidden;
       text-overflow: ellipsis;
       white-space: nowrap;
+      flex: 1;
+    }
+
+    .delete-btn {
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 0.375rem;
+      border-radius: 6px;
+      transition: all 0.2s ease;
+      opacity: 0;
+      visibility: hidden;
+      flex-shrink: 0;
+
+      &:hover {
+        background: $error-light;
+
+        i {
+          color: $error;
+        }
+      }
+
+      &:disabled {
+        cursor: not-allowed;
+        opacity: 0.6 !important;
+
+        &:hover {
+          background: none;
+        }
+      }
+
+      i {
+        font-size: 0.75rem;
+        color: $text-muted;
+        transition: color 0.2s ease;
+      }
     }
   }
 }

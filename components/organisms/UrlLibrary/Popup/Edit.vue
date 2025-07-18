@@ -24,7 +24,6 @@ const get = () => {
     form.setValues({
       ...data,
       hashTagIds,
-      hashTagNames: [], // 編集時は既存タグのみで新規タグ名は空
       genreId,
     });
   });
