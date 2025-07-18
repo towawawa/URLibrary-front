@@ -11,6 +11,7 @@ type Props = {
   valueProp?: keyof Option;
   labelProp?: string;
   errorMessage?: string;
+  taggable?: boolean;
 };
 
 const props = withDefaults(defineProps<Props>(), {
@@ -19,15 +20,30 @@ const props = withDefaults(defineProps<Props>(), {
   labelProp: 'name',
   placeholder: '',
   errorMessage: '',
+  taggable: false,
 });
 
 const emits = defineEmits<{
   (event: 'change', value: Value): void;
+  (event: 'tag:create', tagName: string): void;
 }>();
 
 function onSelected(value: Value): void {
   emits('change', value);
 }
+
+function onTagCreate(tagName: string): void {
+  emits('tag:create', tagName);
+}
+
+// reduce関数: 新しいタグと既存タグの両方に対応
+const reduceFunction = (option: Option) => {
+  const value = option[props.valueProp];
+  // number型とstring型の両方をサポート
+  return typeof value === 'string' || typeof value === 'number'
+    ? value
+    : option[props.valueProp];
+};
 </script>
 
 <template>
@@ -38,14 +54,35 @@ function onSelected(value: Value): void {
       :model-value="props.value"
       :options="props.options"
       :label="props.labelProp"
-      :reduce="(option: Option) => option[props.valueProp]"
-      append-to-body
+      :reduce="reduceFunction"
+      :taggable="props.taggable"
+      :push-tags="false"
+      :create-on-blur="props.taggable"
+      :clearable="true"
       @update:model-value="onSelected"
+      @option:created="onTagCreate"
     >
       <template #no-options>
         <p class="text-left px-2">選択肢が見つかりません。</p>
       </template>
+      <template v-if="props.taggable" #search="{ attributes, events }">
+        <input
+          class="vs__search"
+          v-bind="attributes"
+          v-on="events"
+          placeholder="タグ名を入力してEnterまたはTabキーを押してください"
+        />
+      </template>
+      <template #option="{ label }">
+        <span class="option-text">#{{ label }}</span>
+      </template>
+      <template #selected-option="{ label }">
+        <span class="selected-text">#{{ label }}</span>
+      </template>
     </v-select>
+    <div v-if="props.taggable" class="help-text">
+      新しいタグを追加するには、タグ名を入力してEnterキーまたはTabキーを押してください
+    </div>
     <p
       v-if="props.errorMessage"
       :class="{ 'c-error-message': props.errorMessage }"
@@ -59,6 +96,7 @@ function onSelected(value: Value): void {
 // v-selectのスタイルを上書き
 .pulldown-container {
   padding-bottom: 10px;
+
   .v-select {
     background-color: $white;
 
@@ -71,7 +109,37 @@ function onSelected(value: Value): void {
     .vs__search::placeholder {
       color: $gray !important;
     }
+
+    .vs__selected {
+      background-color: $primary-light;
+      color: $primary-dark;
+      border: 1px solid $primary;
+      border-radius: 4px;
+      padding: 2px 8px;
+      margin: 2px;
+    }
+
+    .vs__deselect {
+      color: $primary;
+
+      &:hover {
+        color: $error;
+      }
+    }
+
+    .option-text,
+    .selected-text {
+      font-weight: 500;
+    }
   }
+
+  .help-text {
+    font-size: 0.75rem;
+    color: $gray;
+    margin-top: 0.25rem;
+    font-style: italic;
+  }
+
   &.is-error {
     .vs__dropdown-toggle {
       border-color: $error !important;

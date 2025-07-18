@@ -2,19 +2,23 @@
 const form = useForm<{
   hashTagId: number | null;
   genreId: number | null;
+  keyword: string;
 }>({
   hashTagId: null,
   genreId: null,
+  keyword: '',
 });
 const urlLibraries = ref<UrlLibrary[]>([]);
 const showNoteId = ref<number | null>(null);
 const showEditPopupId = ref<number | null>(null);
 const showDeletePopupId = ref<number | null>(null);
+const { addToast } = useToast();
 
 const setUrlLibraries = async () => {
   const query = {
     hashTagId: form.data.hashTagId,
     genreId: form.data.genreId,
+    keyword: form.data.keyword || undefined, // 空文字の場合はundefinedにする
   };
 
   await fetcher('GET', '/url-libraries', { query }).then((res) => {
@@ -23,10 +27,14 @@ const setUrlLibraries = async () => {
 };
 
 const deleteUrlLibrary = async (id: number) => {
-  await fetcher('DELETE', `/url-libraries/${id}`).then(() => {
-    setUrlLibraries();
+  try {
+    await fetcher('DELETE', `/url-libraries/${id}`);
+    await setUrlLibraries();
+    addToast('URLを削除しました', 'success');
     showDeletePopupId.value = null;
-  });
+  } catch (err) {
+    addToast('URLの削除に失敗しました', 'error');
+  }
 };
 
 watch(
@@ -78,7 +86,11 @@ await setUrlLibraries();
 
   <OrganismsConfirmPopup
     v-if="showDeletePopupId"
-    message="本当に削除しますか？"
+    title="URL削除"
+    message="このURLを削除してもよろしいですか？削除後は元に戻すことができません。"
+    confirmText="削除する"
+    cancelText="キャンセル"
+    variant="danger"
     @close="showDeletePopupId = null"
     @confirm="
       deleteUrlLibrary(showDeletePopupId);
