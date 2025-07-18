@@ -1,0 +1,14 @@
+User-agent: *
+Allow: /
+
+# 除外するページ（ログインや管理画面など）
+Disallow: /login
+Disallow: /signup  
+Disallow: /password-reset
+Disallow: /api/
+
+# サイトマップの場所を指定
+Sitemap: https://url-library.com/sitemap.xml
+
+# クロール頻度の調整
+Crawl-delay: 1 
