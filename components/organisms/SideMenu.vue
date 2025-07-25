@@ -57,13 +57,13 @@ const deleteGenre = async () => {
 };
 
 const setGenres = async () => {
-  await fetcher('GET', '/genres')
-    .then((res) => {
-      genres.value = res.data as Genre[];
-    })
-    .catch((err) => {
-      console.error(err);
-    });
+  try {
+    const res = await fetcher('GET', '/genres');
+    genres.value = res.data as Genre[];
+  } catch (err) {
+    console.error('ジャンル一覧取得エラー:', err);
+    genres.value = [];
+  }
 };
 
 const deleteQueryGenreId = () => {

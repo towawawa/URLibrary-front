@@ -12,19 +12,27 @@ export const fetcher = (
   const token = localStorage.getItem('token');
   const nowLoginPage = useRoute().path === '/login';
 
-  // トークンがない場合はログインページへリダイレクト
-  if (!token && !nowLoginPage) {
-    useRouter().push('/login');
-  }
+  // 認証が必要ないAPI（ゲスト作成、ログイン、登録）
+  const publicAPIs = ['/guest/create', '/login', '/register'];
+  const isPublicAPI = publicAPIs.some((api) => path === api);
+
+  // 未ログインでも基本的にはAPIアクセス可能
+  // ただし、認証必須のAPIは401エラーハンドリングで対応
 
   // @todo レスポンスの型定義
+  const headers: Record<string, string> = {
+    Accept: 'application/json',
+  };
+
+  // トークンがある場合のみAuthorizationヘッダーを追加
+  if (token) {
+    headers.Authorization = `Bearer ${token}`;
+  }
+
   return $fetch(path, {
     method,
     baseURL: useRuntimeConfig().public.apiBaseUrl,
-    headers: {
-      Accept: 'application/json',
-      Authorization: `Bearer ${token}`,
-    },
+    headers,
     ...options,
     onRequest() {},
     onResponse() {},
@@ -32,9 +40,14 @@ export const fetcher = (
     onResponseError({ response }) {
       switch (response.status) {
         case 401: {
-          // 認証エラーの場合はログインページへリダイレクト
-          if (!nowLoginPage) {
-            useRouter().push('/login');
+          // 認証エラーの場合の処理
+          if (!nowLoginPage && !isPublicAPI) {
+            // トークンが無効な場合はクリア
+            localStorage.removeItem('token');
+
+            // 未ログインでAPIアクセスした場合は静かに失敗
+            // ゲストアカウント作成は ensureAuthenticated() で明示的に実行
+            console.warn('API認証エラー: 未ログイン状態でのAPIアクセス');
           }
 
           break;

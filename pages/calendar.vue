@@ -1,9 +1,9 @@
 <script lang="ts" setup>
 import Index from '@/components/organisms/Calendar/Index.vue';
 
-definePageMeta({
-  middleware: 'auth',
-});
+// definePageMeta({
+//   middleware: 'auth',
+// });
 
 // SEO設定
 useHead({

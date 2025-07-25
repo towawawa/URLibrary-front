@@ -4,10 +4,8 @@ export default defineNuxtRouteMiddleware((to) => {
 
   const token = localStorage.getItem('token');
 
-  // トークンがない場合はログインページにリダイレクト
-  if (!token) {
-    return navigateTo('/login');
-  }
+  // トークンがない場合でも、ゲストとして利用可能
+  // 認証が必要なページは個別に制御
 
   // パブリックページへのアクセスの場合はホームにリダイレクト
   const publicPages = ['/login', '/signup', '/password-reset'];

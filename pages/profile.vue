@@ -1,9 +1,9 @@
 <script lang="ts" setup>
 import { initialData, validations, names } from '@/utils/forms/userProfile';
 
-definePageMeta({
-  middleware: 'auth',
-});
+// definePageMeta({
+//   middleware: 'auth',
+// });
 
 // ページタイトル設定
 useHead({
@@ -16,6 +16,7 @@ const showUpdateError = ref(false);
 const isLoading = ref(false);
 
 const form = useForm(initialData, validations, names);
+const { isGuest, isAuthenticated } = useAuth();
 
 // 現在のユーザー情報を取得
 const setCurrentUserData = async () => {
@@ -83,7 +84,7 @@ await setCurrentUserData();
 
 <template>
   <div class="profile-page">
-    <div class="profile-container">
+    <div v-if="isAuthenticated && !isGuest" class="profile-container">
       <div class="profile-header">
         <h1>
           <i class="fas fa-user-cog"></i>
@@ -107,7 +108,11 @@ await setCurrentUserData();
         </div>
       </Transition>
 
-      <form class="profile-form" @submit.prevent="updateProfile()">
+      <form
+        v-if="isAuthenticated && !isGuest"
+        class="profile-form"
+        @submit.prevent="updateProfile()"
+      >
         <div class="form-section">
           <h3>基本情報</h3>
 
@@ -183,6 +188,8 @@ await setCurrentUserData();
         </div>
       </form>
     </div>
+    <!-- ゲストユーザー登録促進 -->
+    <OrganismsGuestRegistrationPrompt v-else style="width: 50%" />
   </div>
 </template>
 

@@ -8,7 +8,10 @@ useHead({ title: 'ログイン' });
 
 <template>
   <div class="login">
-    <h1>URLibrary</h1>
+    <h1>
+      URLibrary
+      <span style="font-size: 1.5rem;">α版</span>
+    </h1>
     <OrganismsLogin />
   </div>
 </template>
