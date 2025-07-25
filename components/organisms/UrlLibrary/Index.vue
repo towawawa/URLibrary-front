@@ -22,9 +22,13 @@ const setUrlLibraries = async () => {
     keyword: form.data.keyword || undefined, // 空文字の場合はundefinedにする
   };
 
-  await fetcher('GET', '/url-libraries', { query }).then((res) => {
+  try {
+    const res = await fetcher('GET', '/url-libraries', { query });
     urlLibraries.value = res.data as UrlLibrary[];
-  });
+  } catch (error) {
+    console.error('URL一覧取得エラー:', error);
+    urlLibraries.value = [];
+  }
 };
 
 const deleteUrlLibrary = async (id: number) => {

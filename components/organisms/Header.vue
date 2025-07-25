@@ -12,7 +12,7 @@ const showUserMenu = ref(false);
 const showGenreMenu = ref(false);
 
 // 認証情報を取得
-const { user, logout: authLogout } = useAuth();
+const { user, logout: authLogout, isGuest } = useAuth();
 
 const logout = async () => {
   await authLogout();
@@ -70,6 +70,7 @@ const fetchGenres = async () => {
     genres.value = res.data as Genre[];
   } catch (err) {
     console.error('ジャンル取得エラー:', err);
+    genres.value = [];
   }
 };
 
@@ -129,6 +130,7 @@ const getDefaultIcon = (genreName: string) => {
       <div class="header-left">
         <nuxt-link class="logo" to="/" @click="closeMenusOnOutsideClick">
           URLibrary
+          <span style="font-size: 1rem; color: black">α版</span>
         </nuxt-link>
       </div>
 
@@ -198,6 +200,7 @@ const getDefaultIcon = (genreName: string) => {
                   設定
                 </nuxt-link>
                 <button
+                  v-if="!isGuest"
                   class="dropdown-item logout-item"
                   @click="
                     logout();
@@ -279,6 +282,7 @@ const getDefaultIcon = (genreName: string) => {
                   設定
                 </nuxt-link>
                 <button
+                  v-if="!isGuest"
                   class="dropdown-item logout-item"
                   @click="
                     logout();

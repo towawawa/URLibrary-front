@@ -2,8 +2,8 @@
 import { initialData, validations, names } from '@/utils/forms/login';
 
 const form = useForm(initialData, validations, names);
-const { login: authLogin } = useAuth();
-const { showError, showInfo } = useToast();
+const { login: authLogin, createGuestAccount } = useAuth();
+const { showError, showInfo, showSuccess } = useToast();
 const router = useRouter();
 
 const login = async () => {

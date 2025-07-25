@@ -5,7 +5,7 @@ const form = useForm(initialData, validations, names);
 const { getMasters } = useMaster();
 const { addToast } = useToast();
 
-const register = () => {
+const register = async () => {
   if (form.allValidate()) return;
 
   fetcher('POST', '/url-libraries', { body: form.data })

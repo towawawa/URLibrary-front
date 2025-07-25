@@ -29,7 +29,7 @@ const get = () => {
   });
 };
 
-const edit = () => {
+const edit = async () => {
   if (form.allValidate()) return;
 
   fetcher('PUT', `/url-libraries/${props.id}`, { body: form.data })

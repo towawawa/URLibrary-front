@@ -57,7 +57,7 @@ const emits = defineEmits<{
         />
 
         <!-- 3個おきに小さな広告を表示 -->
-        <div v-if="(index + 1) % 3 === 0" class="ad-break">
+        <div v-if="(index + 1) % 5 === 0" class="ad-break">
           <AtomsAdSense
             ad-slot="1200848053"
             ad-format="auto"
