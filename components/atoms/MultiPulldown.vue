@@ -1,16 +1,14 @@
 <script setup lang="ts" generic="Value extends (string | number)[]">
-import vSelect from 'vue-select';
-import 'vue-select/dist/vue-select.css';
-
-export type Option = { [key: string]: unknown };
+type SelectOption = { [key: string]: unknown };
 type Props = {
   class?: string;
   placeholder?: string;
-  options: Array<Option> | Readonly<Array<Option>>;
+  options: Array<SelectOption> | Readonly<Array<SelectOption>>;
   value: Value;
-  valueProp?: keyof Option;
+  valueProp?: keyof SelectOption;
   labelProp?: string;
   errorMessage?: string;
+  disabled?: boolean;
 };
 
 const props = withDefaults(defineProps<Props>(), {
@@ -19,6 +17,7 @@ const props = withDefaults(defineProps<Props>(), {
   labelProp: 'name',
   placeholder: '',
   errorMessage: '',
+  disabled: false,
 });
 
 const emits = defineEmits<{
@@ -27,15 +26,24 @@ const emits = defineEmits<{
 }>();
 
 function onSelected(value: Value): void {
-  emits('change', value);
+  const filtered = (value as Array<string | number>).filter(
+    (v) => typeof v === 'number',
+  ) as Value;
+  emits('change', filtered);
 }
 
-function onTagCreate(tagName: string): void {
-  emits('tag:create', tagName);
+function onTagCreate(option: SelectOption | string): void {
+  const tagName =
+    typeof option === 'string'
+      ? option
+      : ((option[props.labelProp] as string) ?? '');
+  if (tagName && tagName.trim().length > 0) {
+    emits('tag:create', tagName.trim());
+  }
 }
 
 // reduce関数: 新しいタグと既存タグの両方に対応
-const reduceFunction = (option: Option) => {
+const reduceFunction = (option: SelectOption) => {
   const value = option[props.valueProp];
   // number型とstring型の両方をサポート
   return typeof value === 'string' || typeof value === 'number'
@@ -53,8 +61,10 @@ const reduceFunction = (option: Option) => {
       :options="props.options"
       :label="props.labelProp"
       :reduce="reduceFunction"
+      :taggable="true"
       :push-tags="false"
       :clearable="true"
+      :disabled="props.disabled"
       @update:model-value="onSelected"
       @option:created="onTagCreate"
     >

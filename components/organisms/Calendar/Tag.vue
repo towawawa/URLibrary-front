@@ -22,6 +22,7 @@ const props = withDefaults(defineProps<Props>(), {
 </template>
 
 <style lang="scss" scoped>
+@use 'sass:color';
 .calendar-tag {
   display: block;
   padding: 0.5rem 0.625rem;
@@ -50,7 +51,7 @@ const props = withDefaults(defineProps<Props>(), {
 
   .tag-url {
     font-size: 0.65rem;
-    color: lighten($primary-dark, 15%);
+    color: color.adjust($primary-dark, $lightness: 15%);
     font-weight: 400;
     // URLの省略表示
     overflow: hidden;

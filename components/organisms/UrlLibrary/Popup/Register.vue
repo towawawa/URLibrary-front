@@ -4,9 +4,13 @@ import { initialData, validations, names } from '@/utils/forms/urlLibrary';
 const form = useForm(initialData, validations, names);
 const { getMasters } = useMaster();
 const { addToast } = useToast();
+const isSubmitting = ref(false);
 
 const register = async () => {
   if (form.allValidate()) return;
+
+  if (isSubmitting.value) return;
+  isSubmitting.value = true;
 
   fetcher('POST', '/url-libraries', { body: form.data })
     .then(async () => {
@@ -21,6 +25,9 @@ const register = async () => {
       } else {
         addToast('URLの登録に失敗しました', 'error');
       }
+    })
+    .finally(() => {
+      isSubmitting.value = false;
     });
 };
 
@@ -32,7 +39,15 @@ const emits = defineEmits(['close']);
     <div class="register-container">
       <h2 class="register-title">URL登録</h2>
       <OrganismsUrlLibraryPopupForm :form="form" />
-      <AtomsBtn class="register-btn" size="lg" fullWidth @click="register()"
+      <AtomsBtn
+        class="register-btn"
+        size="lg"
+        fullWidth
+        :disabled="
+          isSubmitting || !form.data.url || form.data.url.trim().length === 0
+        "
+        :loading="isSubmitting"
+        @click="register()"
         >登録</AtomsBtn
       >
     </div>

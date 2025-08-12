@@ -3,11 +3,13 @@ type Props = {
   class?: string;
   value: T;
   errorMessage?: string;
+  disabled?: boolean;
 };
 
 const props = withDefaults(defineProps<Props>(), {
   class: '',
   errorMessage: '',
+  disabled: false,
 });
 
 const emits = defineEmits<{
@@ -24,6 +26,7 @@ const onChange = (event: Event): void => {
     <textarea
       :value="props.value"
       :class="{ 'is-error': props.errorMessage }"
+      :disabled="props.disabled"
       @change="onChange($event)"
     >
     {{ props.value }}

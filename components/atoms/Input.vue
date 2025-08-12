@@ -23,26 +23,26 @@ const props = withDefaults(defineProps<Props>(), {
 const emits = defineEmits<{
   (event: 'change', value: T): void;
   (event: 'input', value: T): void;
-  (event: 'focus', event: FocusEvent): void;
-  (event: 'blur', event: FocusEvent): void;
+  (event: 'focus', e: FocusEvent): void;
+  (event: 'blur', e: FocusEvent): void;
 }>();
 
-const onChange = (event: Event): void => {
-  const value = (event.target as HTMLInputElement).value as T;
+const onChange = (e: Event): void => {
+  const value = (e.target as HTMLInputElement).value as T;
   emits('change', value);
 };
 
-const onInput = (event: Event): void => {
-  const value = (event.target as HTMLInputElement).value as T;
+const onInput = (e: Event): void => {
+  const value = (e.target as HTMLInputElement).value as T;
   emits('input', value);
 };
 
-const onFocus = (event: FocusEvent): void => {
-  emits('focus', event);
+const onFocus = (e: FocusEvent): void => {
+  emits('focus', e);
 };
 
-const onBlur = (event: FocusEvent): void => {
-  emits('blur', event);
+const onBlur = (e: FocusEvent): void => {
+  emits('blur', e);
 };
 </script>
 
@@ -59,7 +59,7 @@ const onBlur = (event: FocusEvent): void => {
         :value="props.value"
         :type="props.type"
         :placeholder="props.placeholder"
-        :disabled="disabled"
+        :disabled="props.disabled"
         :readonly="readonly"
         class="input-field"
         @change="onChange($event)"

@@ -1,16 +1,14 @@
 <script setup lang="ts" generic="Value extends string | number | null">
-import vSelect from 'vue-select';
-import 'vue-select/dist/vue-select.css';
-
-export type Option = { [key: string]: unknown };
+type SelectOption = { [key: string]: unknown };
 type Props = {
   class?: string;
   placeholder?: string;
-  options: Array<Option> | Readonly<Array<Option>>;
+  options: Array<SelectOption> | Readonly<Array<SelectOption>>;
   value: Value | undefined;
-  valueProp?: keyof Option;
+  valueProp?: keyof SelectOption;
   labelProp?: string;
   errorMessage?: string;
+  disabled?: boolean;
 };
 
 const props = withDefaults(defineProps<Props>(), {
@@ -19,6 +17,7 @@ const props = withDefaults(defineProps<Props>(), {
   labelProp: 'name',
   placeholder: '',
   errorMessage: '',
+  disabled: false,
 });
 
 const emits = defineEmits<{
@@ -45,7 +44,8 @@ function onSelected(value: Value): void {
       :model-value="props.value"
       :options="props.options"
       :label="props.labelProp"
-      :reduce="(option: Option) => option[props.valueProp]"
+      :reduce="(option: SelectOption) => option[props.valueProp]"
+      :disabled="props.disabled"
       @update:model-value="onSelected"
     >
       <template #no-options>

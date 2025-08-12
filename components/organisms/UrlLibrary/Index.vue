@@ -67,13 +67,24 @@ await setUrlLibraries();
   <div class="url-list">
     <div :class="`left-block ${showNoteId ? '' : 'close-note'}`">
       <OrganismsUrlLibrarySearch class="search-block" :form="form" />
-      <OrganismsUrlLibraryList
-        :data="urlLibraries"
-        @click-note="showNoteId = $event"
-        @click-edit="showEditPopupId = $event"
-        @click-delete="showDeletePopupId = $event"
-        @add-url="showRegisterPopup = true"
-      />
+      <div class="content-with-ads">
+        <div class="content-area">
+          <OrganismsUrlLibraryList
+            :data="urlLibraries"
+            @click-note="showNoteId = $event"
+            @click-edit="showEditPopupId = $event"
+            @click-delete="showDeletePopupId = $event"
+            @add-url="showRegisterPopup = true"
+          />
+        </div>
+        <aside class="ad-area">
+          <AtomsAdSense
+            ad-slot="2163232479"
+            ad-format="auto"
+            style="display: block; width: 100%; min-height: 250px"
+          />
+        </aside>
+      </div>
     </div>
     <div v-if="showNoteId" class="right-block">
       <OrganismsUrlLibraryNote :id="showNoteId" @close="showNoteId = null" />
@@ -131,6 +142,22 @@ await setUrlLibraries();
 
     .search-block {
       margin-bottom: 20px;
+    }
+
+    .content-with-ads {
+      display: grid;
+      grid-template-columns: 1fr 300px; // コンテンツと右広告
+      gap: 16px;
+
+      .content-area {
+        min-width: 0; // 折り返し対策
+      }
+
+      .ad-area {
+        position: sticky;
+        top: 100px; // ヘッダー分の余白
+        height: fit-content;
+      }
     }
   }
 

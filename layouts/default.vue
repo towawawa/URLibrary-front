@@ -59,6 +59,9 @@ await initAuth();
 
   <!-- トーストコンテナ -->
   <OrganismsToastContainer />
+
+  <!-- フッター -->
+  <OrganismsFooter />
 </template>
 
 <style lang="scss" scoped>
