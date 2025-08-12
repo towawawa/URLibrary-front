@@ -59,7 +59,7 @@ await setUrlLibraries();
 <template>
   <div>
     <OrganismsCalendarSearch :form="form" />
-    <OrganismsCalendar :data="urlLibraries" :ym="form.data.ym" />
+    <OrganismsCalendarGrid :data="urlLibraries" :ym="form.data.ym" />
   </div>
 </template>
 

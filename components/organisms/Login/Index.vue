@@ -62,6 +62,7 @@ const handleGoogleLogin = () => {
 </template>
 
 <style lang="scss" scoped>
+@use 'sass:color';
 .login-container {
   display: flex;
   flex-direction: column;
@@ -148,7 +149,7 @@ const handleGoogleLogin = () => {
         background: linear-gradient(
           135deg,
           $primary-hover 0%,
-          darken($primary-hover, 5%) 100%
+          color.adjust($primary-hover, $lightness: -5%) 100%
         );
         transform: translateY(-1px);
         box-shadow: 0 4px 8px rgba(116, 160, 67, 0.3);

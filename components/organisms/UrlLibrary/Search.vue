@@ -112,6 +112,7 @@ onUnmounted(() => {
 </template>
 
 <style lang="scss" scoped>
+@use 'sass:color';
 .search {
   display: flex;
   gap: 1rem;
@@ -134,7 +135,7 @@ onUnmounted(() => {
     background: linear-gradient(
       135deg,
       $primary-light 0%,
-      lighten($primary-light, 5%) 100%
+      color.adjust($primary-light, $lightness: 5%) 100%
     );
     border: 2px solid $primary;
     border-radius: 25px;

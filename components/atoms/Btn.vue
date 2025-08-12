@@ -52,6 +52,7 @@ const handleClick = () => {
 </template>
 
 <style lang="scss" scoped>
+@use 'sass:color';
 .btn {
   position: relative;
   display: inline-flex;
@@ -132,8 +133,8 @@ const handleClick = () => {
     border-color: $error;
 
     &:hover:not(.btn--disabled):not(.btn--loading) {
-      background: darken($error, 10%);
-      border-color: darken($error, 10%);
+      background: color.adjust($error, $lightness: -10%);
+      border-color: color.adjust($error, $lightness: -10%);
       transform: translateY(-1px);
       box-shadow: 0 4px 8px rgba(239, 68, 68, 0.25);
     }

@@ -180,21 +180,14 @@ onMounted(() => {
         </div>
       </div>
 
-      <!-- OGP画像 -->
-      <div class="ogp-container">
-        <div v-if="isLoadingOgp" class="ogp-loading">
-          <i class="fas fa-spinner fa-spin"></i>
-        </div>
+      <!-- OGP画像（存在する場合のみ表示） -->
+      <div v-if="ogpImageUrl && !ogpError" class="ogp-container">
         <img
-          v-else-if="ogpImageUrl && !ogpError"
           :src="ogpImageUrl"
           :alt="data.title"
           class="ogp-image"
           @error="ogpError = true"
         />
-        <div v-else class="ogp-placeholder">
-          <i class="fas fa-image"></i>
-        </div>
       </div>
     </div>
   </article>
@@ -290,18 +283,22 @@ onMounted(() => {
 
   .card-content {
     display: flex;
-    gap: 1.5rem;
-    padding: 1.25rem;
+    gap: 0;
+    padding: 0;
+    align-items: stretch;
 
     .content-main {
-      flex: 1;
+      flex: 1 1 80%;
       min-width: 0;
+      padding: 0.75rem 1rem; // 文字側のみ余白
+      display: flex;
+      flex-direction: column;
 
       .url-link {
         text-decoration: none;
         color: inherit;
         display: block;
-        margin-bottom: 1rem;
+        margin-bottom: 0;
 
         &:hover .url-title {
           color: $primary;
@@ -336,7 +333,7 @@ onMounted(() => {
         display: flex;
         flex-wrap: wrap;
         gap: 0.5rem;
-        margin-bottom: 1rem;
+        margin-bottom: 0;
       }
 
       .meta-info {
@@ -358,11 +355,13 @@ onMounted(() => {
     }
 
     .ogp-container {
-      width: 265px;
-      height: 100px;
-      border-radius: 8px;
+      flex: 0 0 20%;
+      width: 20%;
+      aspect-ratio: 16/9;
+      height: auto;
+      border-radius: 0; // 画像側は余白・装飾なし
       overflow: hidden;
-      background: $gray-100;
+      background: $gray-100; // 画像がない場合の見栄えを維持
       flex-shrink: 0;
       display: flex;
       align-items: center;
@@ -377,11 +376,17 @@ onMounted(() => {
         width: 100%;
         height: 100%;
         object-fit: cover;
+        display: block;
       }
 
       .ogp-placeholder {
         color: $text-muted;
         font-size: 1.5rem;
+        width: 100%;
+        height: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
       }
     }
   }
